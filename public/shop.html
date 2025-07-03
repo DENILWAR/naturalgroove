@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Natural Groove</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/shop.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="/public/index.html">NATURAL GROOVE</a>
+            </div>
+            <ul class="menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#team">Team</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="shop.html" class="active">Shop</a></li>
+                <li><a href="cart.html" class="cart-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Chrome Objects 
+    <div class="chrome-object obj-right-top"></div>-->
+
+    <!-- Shop Hero Section -->
+    <section id="shop-hero" class="section">
+        <div class="section-content centered">
+            <h1 id="shop-title">NATURAL MARKET</h1>
+            <p class="hero-subtitle">Ropa que conecta con tu estilo natural</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Algodón Orgánico</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Estilo Natural</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">∞</span>
+                    <span class="stat-label">Good Vibes</span>
+                </div>
+            </div>
+        </div>
+        <div class="chrome-object obj-left"></div>
+    </section>
+
+    <!-- Filters Section -->
+    <section id="filters" class="section">
+        <div class="section-content">
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label for="category-filter">Categoría:</label>
+                    <select id="category-filter" class="filter-select">
+                        <option value="all">Todas</option>
+                        <option value="camisetas">Camisetas</option>
+                        <option value="hoodies">Hoodies</option>
+                        <option value="pantalones">Pantalones</option>
+                        <option value="accesorios">Accesorios</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="price-filter">Precio:</label>
+                    <select id="price-filter" class="filter-select">
+                        <option value="all">Todos</option>
+                        <option value="0-25">0€ - 25€</option>
+                        <option value="25-50">25€ - 50€</option>
+                        <option value="50-75">50€ - 75€</option>
+                        <option value="75+">75€+</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="sort-filter">Ordenar:</label>
+                    <select id="sort-filter" class="filter-select">
+                        <option value="featured">Destacados</option>
+                        <option value="price-low">Precio: Menor a Mayor</option>
+                        <option value="price-high">Precio: Mayor a Menor</option>
+                        <option value="name">Nombre A-Z</option>
+                    </select>
+                </div>
+
+                <div class="search-group">
+                    <input type="text" id="search-input" placeholder="Buscar productos..." class="search-input">
+                    <button id="search-btn" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="chrome-object obj-right-medium"></div>
+    </section>
+
+    <!-- Products Grid Section -->
+    <section id="products" class="section">
+        <div class="section-content">
+            <div class="products-header">
+                <h2>NUESTROS PRODUCTOS</h2>
+                <div class="products-count">
+                    <span id="products-showing">Mostrando</span>
+                    <span id="products-total">0</span>
+                    <span>productos</span>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading-products" class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Cargando productos...</p>
+            </div>
+
+            <!-- Products Grid -->
+            <div id="products-grid" class="products-grid">
+                <!-- Los productos se cargan dinámicamente desde products.json -->
+            </div>
+
+            <!-- No Results State -->
+            <div id="no-results" class="no-results" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h3>No se encontraron productos</h3>
+                <p>Intenta cambiar los filtros o búsqueda</p>
+                <button id="clear-filters" class="btn-secondary">Limpiar filtros</button>
+            </div>
+        </div>
+        <div class="chrome-object obj-left-small"></div>
+        <div class="chrome-object obj-right-small"></div>
+    </section>
+
+    <!-- Featured Categories Section -->
+    <section id="categories" class="section">
+        <div class="section-content">
+            <span class="small-text">NATURAL MARKET</span>
+            <h2>CATEGORÍAS</h2>
+            <div class="categories-grid">
+                <div class="category-card" data-category="camisetas">
+                    <div class="category-image">
+                        <img src="../assets/images/categories/camisetas.jpg" alt="Camisetas" loading="lazy">
+                    </div>
+                    <div class="category-info">
+                        <h3>Camisetas</h3>
+                        <p>Diseños únicos para tu día a día</p>
+                        <span class="category-count">8 productos</span>
+                    </div>
+                </div>
+
+                <div class="category-card" data-category="hoodies">
+                    <div class="category-image">
+                        <img src="../assets/images/categories/hoodies.jpg" alt="Hoodies" loading="lazy">
+                    </div>
+                    <div class="category-info">
+                        <h3>Hoodies</h3>
+                        <p>Comodidad y estilo en uno</p>
+                        <span class="category-count">5 productos</span>
+                    </div>
+                </div>
+
+                <div class="category-card" data-category="accesorios">
+                    <div class="category-image">
+                        <img src="../assets/images/categories/accesorios.jpg" alt="Accesorios" loading="lazy">
+                    </div>
+                    <div class="category-info">
+                        <h3>Accesorios</h3>
+                        <p>Completa tu look natural</p>
+                        <span class="category-count">3 productos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chrome-object obj-gold-left"></div>
+        <div class="chrome-object obj-gold-right"></div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section id="newsletter" class="section">
+        <div class="section-content centered">
+            <span class="small-text">NATURAL MARKET</span>
+            <h2>MANTENTE AL DÍA</h2>
+            <p>Sé el primero en conocer nuestros nuevos lanzamientos y ofertas exclusivas.</p>
+            <div class="newsletter-form">
+                <input type="email" placeholder="Tu email" class="newsletter-input" id="newsletter-email">
+                <button class="newsletter-btn" id="newsletter-submit">
+                    <span>Suscribirse</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            <p class="newsletter-note">No spam, solo buenas vibras 🌿</p>
+        </div>
+        <div class="chrome-object obj-left-medium"></div>
+        <div class="chrome-object obj-right-medium"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="section">
+        <div class="section-content">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>NATURAL GROOVE</h3>
+                    <p>Ropa que conecta con tu estilo natural. Diseños únicos para ravers y amantes de la buena música.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Tienda</h4>
+                    <ul>
+                        <li><a href="#" data-category="camisetas">Camisetas</a></li>
+                        <li><a href="#" data-category="hoodies">Hoodies</a></li>
+                        <li><a href="#" data-category="accesorios">Accesorios</a></li>
+                        <li><a href="cart.html">Mi Carrito</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Información</h4>
+                    <ul>
+                        <li><a href="index.html#about">Sobre Nosotros</a></li>
+                        <li><a href="index.html#contact">Contacto</a></li>
+                        <li><a href="#" id="size-guide-link">Guía de Tallas</a></li>
+                        <li><a href="#" id="shipping-info-link">Envíos</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Síguenos</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-spotify"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Natural Groove. Todos los derechos reservados.</p>
+                <p>Hecho con 🌿 para la comunidad raver</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Size Guide Modal -->
+    <div id="size-guide-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Guía de Tallas</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="size-chart">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Talla</th>
+                                <th>Pecho (cm)</th>
+                                <th>Largo (cm)</th>
+                                <th>Ancho (cm)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>S</td>
+                                <td>46-48</td>
+                                <td>69</td>
+                                <td>51</td>
+                            </tr>
+                            <tr>
+                                <td>M</td>
+                                <td>50-52</td>
+                                <td>72</td>
+                                <td>54</td>
+                            </tr>
+                            <tr>
+                                <td>L</td>
+                                <td>54-56</td>
+                                <td>75</td>
+                                <td>57</td>
+                            </tr>
+                            <tr>
+                                <td>XL</td>
+                                <td>58-60</td>
+                                <td>78</td>
+                                <td>60</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Quick View Modal -->
+    <div id="quick-view-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="quick-view-title">Vista Rápida</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="quick-view-body">
+                <!-- Contenido dinámico del producto -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Notification -->
+    <div id="cart-notification" class="cart-notification">
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="notification-text">Producto añadido al carrito</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/cart.js"></script>
+    <script src="assets/js/shop.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

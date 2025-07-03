@@ -1,0 +1,101 @@
+{
+    "products": [
+      {
+        "id": "ng-shirt-001",
+        "name": "Natural Groove Logo Tee",
+        "category": "camisetas",
+        "price": 25,
+        "originalPrice": null,
+        "currency": "EUR",
+        "images": {
+          "front": "assets/images/products/shirt-001-front.jpg",
+          "back": "assets/images/products/shirt-001-back.jpg",
+          "thumbnail": "assets/images/products/shirt-001-thumb.jpg"
+        },
+        "sizes": ["S", "M", "L", "XL"],
+        "colors": ["Negro", "Blanco", "Gris"],
+        "description": "Camiseta 100% algodón con logo Natural Groove",
+        "material": "100% Algodón orgánico",
+        "featured": true,
+        "available": true,
+        "badge": "new"
+      },
+      {
+        "id": "ng-hoodie-001",
+        "name": "NG Classic Hoodie",
+        "category": "hoodies",
+        "price": 45,
+        "originalPrice": 55,
+        "currency": "EUR",
+        "images": {
+          "front": "assets/images/products/hoodie-001-front.jpg",
+          "back": "assets/images/products/hoodie-001-back.jpg",
+          "thumbnail": "assets/images/products/hoodie-001-thumb.jpg"
+        },
+        "sizes": ["S", "M", "L", "XL"],
+        "colors": ["Negro", "Gris", "Azul"],
+        "description": "Hoodie cómodo perfecto para sesiones nocturnas",
+        "material": "80% Algodón, 20% Poliéster",
+        "featured": true,
+        "available": true,
+        "badge": "sale"
+      },
+      {
+        "id": "ng-pants-001",
+        "name": "NG Cargo Pants",
+        "category": "pantalones",
+        "price": 65,
+        "originalPrice": null,
+        "currency": "EUR",
+        "images": {
+          "front": "assets/images/products/pants-001-front.jpg",
+          "thumbnail": "assets/images/products/pants-001-thumb.jpg"
+        },
+        "sizes": ["S", "M", "L", "XL"],
+        "colors": ["Negro", "Verde", "Beige"],
+        "description": "Pantalones cargo con múltiples bolsillos",
+        "material": "100% Algodón resistente",
+        "featured": false,
+        "available": true,
+        "badge": null
+      },
+      {
+        "id": "ng-cap-001",
+        "name": "NG Snapback Cap",
+        "category": "accesorios",
+        "price": 20,
+        "originalPrice": null,
+        "currency": "EUR",
+        "images": {
+          "front": "assets/images/products/cap-001-front.jpg",
+          "thumbnail": "assets/images/products/cap-001-thumb.jpg"
+        },
+        "sizes": ["Única"],
+        "colors": ["Negro", "Blanco"],
+        "description": "Gorra snapback con logo bordado",
+        "material": "100% Algodón",
+        "featured": false,
+        "available": true,
+        "badge": null
+      },
+      {
+        "id": "ng-jacket-001",
+        "name": "NG Urban Jacket",
+        "category": "chaquetas",
+        "price": 85,
+        "originalPrice": 95,
+        "currency": "EUR",
+        "images": {
+          "front": "assets/images/products/jacket-001-front.jpg",
+          "thumbnail": "assets/images/products/jacket-001-thumb.jpg"
+        },
+        "sizes": ["S", "M", "L", "XL"],
+        "colors": ["Negro", "Gris"],
+        "description": "Chaqueta urbana resistente al viento",
+        "material": "Poliéster impermeable",
+        "featured": true,
+        "available": true,
+        "badge": "sale"
+      }
+    ]
+  }

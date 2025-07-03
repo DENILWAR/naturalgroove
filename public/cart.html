@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - Natural Groove</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/shop.css">
+    <link rel="stylesheet" href="assets/css/cart.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="index.html">NATURAL GROOVE</a>
+            </div>
+            <ul class="menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#team">Team</a></li>
+                <li><a href="index.html#projects">Projects</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="cart.html" class="cart-link active">
+                    <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cart-count">0</span>
+                </a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Chrome Objects 
+    <div class="chrome-object obj-right-top"></div>-->
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Cart Hero Section -->
+        <section id="cart-hero" class="section">
+            <div class="section-content centered">
+                <h1 id="cart-title">TU CARRITO</h1>
+                <p class="hero-subtitle">Revisa tus productos seleccionados</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="cart-items-count">0</span>
+                        <span class="stat-label">Productos</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="cart-total-amount">0€</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">🛒</span>
+                        <span class="stat-label">↓</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chrome-object obj-left"></div>
+        </section>
+
+        <!-- Cart Content -->
+        <section id="cart-content" class="section">
+            <div class="section-content">
+                <!-- Empty Cart Message -->
+                <div class="empty-cart" id="emptyCart" style="display: none;">
+                    <div class="empty-cart-content">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h2 class="empty-cart-title">Tu carrito está vacío</h2>
+                        <p class="empty-cart-text">¡Descubre nuestros productos y añade algunos a tu carrito!</p>
+                        <a href="shop.html" class="btn btn-primary">Ir a la Tienda</a>
+                    </div>
+                </div>
+
+                <!-- Cart with Items -->
+                <div class="cart-content-grid" id="cartContentGrid">
+                    <div class="cart-layout">
+                        <!-- Cart Items -->
+                        <div class="cart-items">
+                            <div class="cart-header">
+                                <h2 class="cart-section-title">Productos en tu carrito</h2>
+                                <!--<button class="clear-cart-btn" id="clearCartBtn">
+                                    <span class="clear-icon">🗑️</span>
+                                    Vaciar carrito
+                                </button>-->
+                            </div>
+                            
+                            <div class="cart-items-list" id="cartItemsList">
+                                <!-- Los items se cargarán dinámicamente aquí -->
+                            </div>
+                        </div>
+
+                        <!-- Cart Summary -->
+                        <div class="cart-summary">
+                            <div class="summary-card">
+                                <h3 class="summary-title">Resumen del pedido</h3>
+                                
+                                <div class="summary-details">
+                                    <div class="summary-line">
+                                        <span class="summary-label">Productos</span>
+                                        <span class="summary-value" id="itemsCount">0 items</span>
+                                    </div>
+                                    <div class="summary-line">
+                                        <span class="summary-label">Subtotal</span>
+                                        <span class="summary-value" id="subtotalAmount">0€</span>
+                                    </div>
+                                    <div class="summary-line">
+                                        <span class="summary-label">Envío</span>
+                                        <span class="summary-value" id="shippingAmount">A calcular</span>
+                                    </div>
+                                    <div class="summary-line summary-total">
+                                        <span class="summary-label">Total</span>
+                                        <span class="summary-value" id="totalAmount">0€</span>
+                                    </div>
+                                </div>
+
+                                <div class="summary-note">
+                                    <p class="note-text">
+                                        <span class="note-icon">ℹ️</span>
+                                        Los gastos de envío se calcularán según tu ubicación
+                                    </p>
+                                </div>
+
+                                <div class="summary-actions">
+                                    <button class="btn btn-secondary btn-block" id="continueShopping">
+                                        ← Seguir comprando
+                                    </button>
+                                    <button class="btn btn-primary btn-block" id="proceedCheckout">
+                                        Realizar pedido
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Shipping Info -->
+                            <div class="shipping-info">
+                                <h4 class="shipping-title">Información de envío</h4>
+                                <ul class="shipping-list">
+                                    <li class="shipping-item">
+                                        <span class="shipping-icon">📦</span>
+                                        <span class="shipping-text">Envío gratuito a partir de 50€</span>
+                                    </li>
+                                    <li class="shipping-item">
+                                        <span class="shipping-icon">🚚</span>
+                                        <span class="shipping-text">Entrega en 2-3 días laborables</span>
+                                    </li>
+                                    <li class="shipping-item">
+                                        <span class="shipping-icon">🔄</span>
+                                        <span class="shipping-text">Devoluciones gratuitas en 30 días</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chrome-object obj-left-small"></div>
+            <div class="chrome-object obj-right-small"></div>
+        </section>
+
+        <!-- Recommended Products -->
+        <section id="recommended" class="section">
+            <div class="section-content">
+                <span class="small-text">NATURAL MARKET</span>
+                <h2>TAMBIÉN TE PUEDE INTERESAR</h2>
+                <div class="recommended-grid" id="recommendedProducts">
+                    <!-- Los productos recomendados se cargarán dinámicamente -->
+                </div>
+            </div>
+            <div class="chrome-object obj-gold-left"></div>
+            <div class="chrome-object obj-gold-right"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="section">
+        <div class="section-content">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>NATURAL GROOVE</h3>
+                    <p>Ropa que conecta con tu estilo natural. Diseños únicos para ravers y amantes de la buena música.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Tienda</h4>
+                    <ul>
+                        <li><a href="shop.html" data-category="camisetas">Camisetas</a></li>
+                        <li><a href="shop.html" data-category="hoodies">Hoodies</a></li>
+                        <li><a href="shop.html" data-category="accesorios">Accesorios</a></li>
+                        <li><a href="cart.html">Mi Carrito</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Información</h4>
+                    <ul>
+                        <li><a href="index.html#about">Sobre Nosotros</a></li>
+                        <li><a href="index.html#contact">Contacto</a></li>
+                        <li><a href="#" id="size-guide-link">Guía de Tallas</a></li>
+                        <li><a href="#" id="shipping-info-link">Envíos</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Síguenos</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-spotify"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Natural Groove. Todos los derechos reservados.</p>
+                <p>Hecho con 🌿 para la comunidad raver</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="clearCartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">¿Vaciar carrito?</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres eliminar todos los productos de tu carrito?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelClear">Cancelar</button>
+                <button class="btn btn-danger" id="confirmClear">Sí, vaciar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Notification -->
+    <div id="cart-notification" class="cart-notification">
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="notification-text">Producto actualizado</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/cart.js"></script>
+    <script>
+        // Update cart display function
+        function updateCartDisplay() {
+            const cartItems = getCartItems();
+            const cartTotals = getCartTotals();
+            const emptyCart = document.getElementById('emptyCart');
+            const cartContentGrid = document.getElementById('cartContentGrid');
+            const cartItemsList = document.getElementById('cartItemsList');
+            const cartCount = document.getElementById('cart-count');
+            
+            // Update cart count in header
+            if (cartCount) {
+                cartCount.textContent = cartTotals.itemCount;
+                cartCount.style.display = cartTotals.itemCount > 0 ? 'inline-block' : 'none';
+            }
+            
+            // Update hero stats
+            document.getElementById('cart-items-count').textContent = cartTotals.itemCount;
+            document.getElementById('cart-total-amount').textContent = formatPrice(cartTotals.total);
+            
+            if (cartItems.length === 0) {
+                // Show empty cart
+                emptyCart.style.display = 'block';
+                cartContentGrid.style.display = 'none';
+            } else {
+                // Show cart with items
+                emptyCart.style.display = 'none';
+                cartContentGrid.style.display = 'block';
+                
+                // Generate cart items HTML
+                cartItemsList.innerHTML = cartItems.map(item => `
+                    <div class="cart-item" data-item-id="${item.id}" data-size="${item.size}">
+                        <img src="${item.image}" alt="${item.name}" class="item-image" 
+                             onerror="this.src='assets/images/placeholder-product.jpg'">
+                        <div class="item-details">
+                            <h3 class="item-name">${item.name}</h3>
+                            <div class="item-specs">
+                                <span class="item-spec">Talla: ${item.size}</span>
+                            </div>
+                            <div class="item-price">${formatPrice(item.price)}</div>
+                        </div>
+                        <div class="item-controls">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn decrease-btn" onclick="updateItemQuantity('${item.id}', '${item.size}', ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+                                <span class="quantity-display">${item.quantity}</span>
+                                <button class="quantity-btn increase-btn" onclick="updateItemQuantity('${item.id}', '${item.size}', ${item.quantity + 1})">+</button>
+                            </div>
+                            <button class="remove-btn" onclick="removeItemFromCart('${item.id}', '${item.size}')" title="Eliminar producto">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Update summary
+                document.getElementById('itemsCount').textContent = `${cartTotals.itemCount} ${cartTotals.itemCount === 1 ? 'item' : 'items'}`;
+                document.getElementById('subtotalAmount').textContent = formatPrice(cartTotals.subtotal);
+                document.getElementById('shippingAmount').textContent = cartTotals.shipping === 0 ? 'Gratis' : formatPrice(cartTotals.shipping);
+                document.getElementById('totalAmount').textContent = formatPrice(cartTotals.total);
+            }
+        }
+        
+        // Helper functions for cart interaction
+        function updateItemQuantity(itemId, size, newQuantity) {
+            updateCartItemQuantity(itemId, size, newQuantity);
+            updateCartDisplay();
+            showNotification('Cantidad actualizada');
+        }
+        
+        function removeItemFromCart(itemId, size) {
+            removeFromCart(itemId, size);
+            updateCartDisplay();
+            showNotification('Producto eliminado del carrito');
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('cart-notification');
+            const notificationText = document.getElementById('notification-text');
+            
+            if (notification && notificationText) {
+                notificationText.textContent = message;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        }
+        
+        // Load recommended products (placeholder function)
+        function loadRecommendedProducts() {
+            const recommendedGrid = document.getElementById('recommendedProducts');
+            recommendedGrid.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #666; grid-column: 1 / -1;">
+                    <p style="color: rgba(255,255,255,0.7);">Los productos recomendados aparecerán aquí una vez que integres el sistema de productos.</p>
+                </div>
+            `;
+        }
+
+        // Generate starfield
+        function generateStarfield() {
+            const starfield = document.getElementById('starfield');
+            const starCount = 200;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random size class
+                const sizes = ['small', 'medium', 'large'];
+                const sizeWeights = [0.6, 0.3, 0.1];
+                const randomValue = Math.random();
+                let size = sizes[0];
+                
+                if (randomValue < sizeWeights[2]) {
+                    size = sizes[2];
+                } else if (randomValue < sizeWeights[1] + sizeWeights[2]) {
+                    size = sizes[1];
+                }
+                
+                star.classList.add(size);
+                
+                // Random position
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                
+                // Random animation duration and delay
+                const duration = 2 + Math.random() * 4;
+                const delay = Math.random() * 2;
+                
+                // Random opacity range based on size
+                let minOpacity, maxOpacity;
+                switch(size) {
+                    case 'small':
+                        minOpacity = 0.1;
+                        maxOpacity = 0.6;
+                        break;
+                    case 'medium':
+                        minOpacity = 0.2;
+                        maxOpacity = 0.8;
+                        break;
+                    case 'large':
+                        minOpacity = 0.4;
+                        maxOpacity = 1;
+                        break;
+                }
+                
+                star.style.setProperty('--duration', duration + 's');
+                star.style.setProperty('--min-opacity', minOpacity);
+                star.style.setProperty('--max-opacity', maxOpacity);
+                star.style.animationDelay = delay + 's';
+                
+                starfield.appendChild(star);
+            }
+        }
+
+        // Initialize cart page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate starfield first
+            generateStarfield();
+            
+            updateCartDisplay();
+            loadRecommendedProducts();
+            
+            // Event listeners
+            document.getElementById('continueShopping').addEventListener('click', () => {
+                window.location.href = 'shop.html';
+            });
+            
+            document.getElementById('proceedCheckout').addEventListener('click', () => {
+                if (getCartItems().length > 0) {
+                    window.location.href = 'contact-order.html';
+                } else {
+                    showNotification('Tu carrito está vacío');
+                }
+            });
+            
+            // Clear cart functionality
+            document.getElementById('clearCartBtn').addEventListener('click', () => {
+                document.getElementById('clearCartModal').style.display = 'block';
+            });
+            
+            // Modal close events
+            document.querySelectorAll('.close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    modal.style.display = 'none';
+                });
+            });
+            
+            // Modal background click
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.style.display = 'none';
+                    }
+                });
+            });
+            
+            document.getElementById('cancelClear').addEventListener('click', () => {
+                document.getElementById('clearCartModal').style.display = 'none';
+            });
+            
+            document.getElementById('confirmClear').addEventListener('click', () => {
+                clearCart();
+                document.getElementById('clearCartModal').style.display = 'none';
+                updateCartDisplay();
+                showNotification('Carrito vaciado');
+            });
+        });
+    </script>
+</body>
+</html>
