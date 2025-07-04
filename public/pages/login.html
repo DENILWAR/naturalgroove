@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natural Groove - Iniciar Sesión</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Efectos de fondo -->
+    <div class="chrome-object obj-right-top"></div>
+    
+    <!-- Navegación -->
+    <nav class="auth-nav">
+        <a href="index.html" class="back-to-home">
+            <i class="fas fa-arrow-left"></i>
+            <span>Volver a Natural Groove</span>
+        </a>
+        <div class="auth-nav-links">
+            <span>¿No tienes cuenta?</span>
+            <a href="register.html" class="auth-link">Regístrate</a>
+        </div>
+    </nav>
+    
+    <!-- Contenedor principal -->
+    <main class="auth-container">
+        <div class="auth-form-wrapper">
+            <!-- Header -->
+            <div class="auth-header">
+                <h1 class="auth-title">Bienvenido de vuelta</h1>
+                <p class="auth-subtitle">Inicia sesión en Natural Groove</p>
+            </div>
+            
+            <!-- Formulario -->
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="tu@email.com"
+                        required
+                        autocomplete="email"
+                    >
+                    <div class="form-error" id="emailError"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Contraseña
+                    </label>
+                    <div class="password-input-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="form-input" 
+                            placeholder="Tu contraseña"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="passwordToggleIcon"></i>
+                        </button>
+                    </div>
+                    <div class="form-error" id="passwordError"></div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <span class="checkmark"></span>
+                        Recordarme
+                    </label>
+                    <a href="#" class="forgot-password" onclick="showForgotPassword()">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                </div>
+                
+                <button type="submit" class="auth-button primary" id="loginButton">
+                    <span class="button-text">Iniciar Sesión</span>
+                    <div class="button-spinner" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </button>
+            </form>
+            
+            <!-- Separador -->
+            <div class="auth-separator">
+                <span>o continúa con</span>
+            </div>
+            
+            <!-- Social Login (Placeholder) -->
+            <div class="social-login">
+                <button type="button" class="social-button google" onclick="socialLogin('google')">
+                    <i class="fab fa-google"></i>
+                    Google
+                </button>
+                <button type="button" class="social-button github" onclick="socialLogin('github')">
+                    <i class="fab fa-github"></i>
+                    GitHub
+                </button>
+            </div>
+            
+            <!-- Footer -->
+            <div class="auth-footer">
+                <p>¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal para recuperar contraseña -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Recuperar Contraseña</h3>
+                <button class="modal-close" onclick="closeForgotPassword()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Ingresa tu email y te enviaremos un enlace para recuperar tu contraseña.</p>
+                <form id="forgotPasswordForm">
+                    <div class="form-group">
+                        <label for="resetEmail" class="form-label">Email</label>
+                        <input 
+                            type="email" 
+                            id="resetEmail" 
+                            class="form-input" 
+                            placeholder="tu@email.com"
+                            required
+                        >
+                    </div>
+                    <button type="submit" class="auth-button primary">
+                        <span class="button-text">Enviar Enlace</span>
+                        <div class="button-spinner" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast para mensajes -->
+    <div id="toast" class="toast" style="display: none;"></div>
+    
+    <!-- Scripts -->
+    <script type="module">
+        import { authManager } from './assets/js/auth.js'
+        import { utils } from './assets/js/supabase-config.js'
+        
+        // Elementos del DOM
+        const loginForm = document.getElementById('loginForm')
+        const loginButton = document.getElementById('loginButton')
+        const forgotPasswordModal = document.getElementById('forgotPasswordModal')
+        const forgotPasswordForm = document.getElementById('forgotPasswordForm')
+        
+        // Variables globales
+        let isLoading = false
+        
+        // Función para mostrar/ocultar contraseña
+        window.togglePassword = function() {
+            const passwordInput = document.getElementById('password')
+            const toggleIcon = document.getElementById('passwordToggleIcon')
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text'
+                toggleIcon.classList.remove('fa-eye')
+                toggleIcon.classList.add('fa-eye-slash')
+            } else {
+                passwordInput.type = 'password'
+                toggleIcon.classList.remove('fa-eye-slash')
+                toggleIcon.classList.add('fa-eye')
+            }
+        }
+        
+        // Función para mostrar modal de recuperar contraseña
+        window.showForgotPassword = function() {
+            forgotPasswordModal.style.display = 'flex'
+        }
+        
+        // Función para cerrar modal
+        window.closeForgotPassword = function() {
+            forgotPasswordModal.style.display = 'none'
+        }
+        
+        // Función para login social (placeholder)
+        window.socialLogin = function(provider) {
+            utils.showToast(`Login con ${provider} - Próximamente`, 'info')
+        }
+        
+        // Función para limpiar errores
+        function clearErrors() {
+            document.getElementById('emailError').textContent = ''
+            document.getElementById('passwordError').textContent = ''
+        }
+        
+        // Función para mostrar errores
+        function showError(field, message) {
+            const errorElement = document.getElementById(field + 'Error')
+            if (errorElement) {
+                errorElement.textContent = message
+            }
+        }
+        
+        // Función para toggle loading state
+        function setLoadingState(loading) {
+            isLoading = loading
+            const buttonText = loginButton.querySelector('.button-text')
+            const spinner = loginButton.querySelector('.button-spinner')
+            
+            if (loading) {
+                buttonText.style.display = 'none'
+                spinner.style.display = 'flex'
+                loginButton.disabled = true
+                loginButton.style.opacity = '0.7'
+            } else {
+                buttonText.style.display = 'block'
+                spinner.style.display = 'none'
+                loginButton.disabled = false
+                loginButton.style.opacity = '1'
+            }
+        }
+        
+        // Manejar envío del formulario de login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            
+            if (isLoading) return
+            
+            // Obtener valores
+            const email = document.getElementById('email').value.trim()
+            const password = document.getElementById('password').value
+            
+            // Limpiar errores previos
+            clearErrors()
+            
+            // Validaciones básicas
+            if (!email) {
+                showError('email', 'Email es requerido')
+                return
+            }
+            
+            if (!password) {
+                showError('password', 'Contraseña es requerida')
+                return
+            }
+            
+            // Mostrar loading
+            setLoadingState(true)
+            
+            try {
+                // Intentar login
+                const result = await authManager.handleLogin(email, password)
+                
+                if (result.success) {
+                    utils.showToast('¡Login exitoso! Redirigiendo...', 'success')
+                    
+                    // Redirigir después de un breve delay
+                    setTimeout(() => {
+                        const urlParams = new URLSearchParams(window.location.search)
+                        const redirect = urlParams.get('redirect')
+                        
+                        if (redirect) {
+                            window.location.href = decodeURIComponent(redirect)
+                        } else {
+                            window.location.href = 'index.html'
+                        }
+                    }, 1500)
+                } else {
+                    // Mostrar error específico
+                    if (result.error.includes('email') || result.error.includes('Email')) {
+                        showError('email', result.error)
+                    } else if (result.error.includes('password') || result.error.includes('Password')) {
+                        showError('password', result.error)
+                    } else {
+                        utils.showToast(result.error, 'error')
+                    }
+                }
+            } catch (error) {
+                utils.showToast('Error de conexión. Intenta de nuevo.', 'error')
+                console.error('Error en login:', error)
+            } finally {
+                setLoadingState(false)
+            }
+        })
+        
+        // Manejar formulario de recuperar contraseña
+        forgotPasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            
+            const email = document.getElementById('resetEmail').value.trim()
+            
+            if (!email) {
+                utils.showToast('Email es requerido', 'error')
+                return
+            }
+            
+            const submitButton = forgotPasswordForm.querySelector('button[type="submit"]')
+            const buttonText = submitButton.querySelector('.button-text')
+            const spinner = submitButton.querySelector('.button-spinner')
+            
+            // Mostrar loading
+            buttonText.style.display = 'none'
+            spinner.style.display = 'flex'
+            submitButton.disabled = true
+            
+            try {
+                const result = await authManager.handleForgotPassword(email)
+                
+                if (result.success) {
+                    utils.showToast('Enlace de recuperación enviado a tu email', 'success')
+                    closeForgotPassword()
+                } else {
+                    utils.showToast(result.error, 'error')
+                }
+            } catch (error) {
+                utils.showToast('Error de conexión', 'error')
+            } finally {
+                buttonText.style.display = 'block'
+                spinner.style.display = 'none'
+                submitButton.disabled = false
+            }
+        })
+        
+        // Cerrar modal al hacer clic fuera
+        forgotPasswordModal.addEventListener('click', (e) => {
+            if (e.target === forgotPasswordModal) {
+                closeForgotPassword()
+            }
+        })
+        
+        // Validación en tiempo real
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value.trim()
+            if (email && !utils.isValidEmail(email)) {
+                showError('email', 'Formato de email inválido')
+            } else {
+                showError('email', '')
+            }
+        })
+        
+        document.getElementById('password').addEventListener('blur', function() {
+            const password = this.value
+            if (password && password.length < 6) {
+                showError('password', 'La contraseña debe tener al menos 6 caracteres')
+            } else {
+                showError('password', '')
+            }
+        })
+        
+        // Limpiar errores al escribir
+        document.getElementById('email').addEventListener('input', function() {
+            if (this.value.trim()) {
+                showError('email', '')
+            }
+        })
+        
+        document.getElementById('password').addEventListener('input', function() {
+            if (this.value) {
+                showError('password', '')
+            }
+        })
+        
+        // Redirigir si ya está autenticado
+        authManager.redirectIfAuthenticated()
+        
+        console.log('🔐 Página de login inicializada')
+    </script>
+    
+    <!-- Script para animaciones -->
+    <script>
+        // Animaciones de entrada
+        document.addEventListener('DOMContentLoaded', function() {
+            const authFormWrapper = document.querySelector('.auth-form-wrapper')
+            
+            // Fade in animation
+            setTimeout(() => {
+                authFormWrapper.style.opacity = '1'
+                authFormWrapper.style.transform = 'translateY(0)'
+            }, 100)
+            
+            // Focus en el primer input
+            document.getElementById('email').focus()
+        })
+        
+        // Animación de typing para el título
+        function typeWriter(element, text, delay = 50) {
+            let i = 0
+            element.textContent = ''
+            
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i)
+                    i++
+                    setTimeout(type, delay)
+                }
+            }
+            
+            type()
+        }
+        
+        // Aplicar animación de typing al título
+        setTimeout(() => {
+            const title = document.querySelector('.auth-title')
+            const originalText = title.textContent
+            typeWriter(title, originalText, 80)
+        }, 500)
+    </script>
+</body>
+</html>
