@@ -213,20 +213,6 @@
     border-radius: var(--border-radius);
 }
 
-.cart-count {
-    background: var(--color-primary);
-    color: var(--color-bg);
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    font-weight: var(--font-weight-bold);
-    min-width: 20px;
-    transition: transform 0.3s ease;
-}
 
 .stat-number {
     display: block;
@@ -310,7 +296,7 @@
 }
 
 .quantity-btn:hover {
-    background: #d69c07;
+    background:#d69c07;
     transform: scale(1.1);
 }
 

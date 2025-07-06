@@ -779,4 +779,117 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('🎉 Natural Groove - Sistema completo inicializado');
 
+    // ===== FONDO ESTRELLADO ANIMADO =====
+    
+    function createStarryBackground() {
+        console.log('🌟 Creando fondo estrellado...');
+        
+        // Crear contenedor de estrellas
+        const starryBackground = document.createElement('div');
+        starryBackground.className = 'starry-background';
+        
+        // Función para crear una estrella
+        function createStar(type, count) {
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = `star star-${type}`;
+                
+                // Posición aleatoria
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                
+                star.style.left = `${left}%`;
+                star.style.top = `${top}%`;
+                
+                // Delay aleatorio para la animación
+                const animationDelay = Math.random() * (type === 'large' ? 3 : type === 'medium' ? 4 : 6);
+                star.style.animationDelay = `${animationDelay}s`;
+                
+                // Para estrellas grandes, tamaño variable
+                if (type === 'large') {
+                    const size = Math.random() * 2 + 2; // 2-4px
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                }
+                
+                starryBackground.appendChild(star);
+            }
+        }
+        
+        // Crear diferentes tipos de estrellas
+        createStar('large', 50);    // 50 estrellas grandes
+        createStar('medium', 100);  // 100 estrellas medianas
+        createStar('small', 200);   // 200 estrellas pequeñas
+        
+        // Crear estrellas fugaces
+        function createShootingStar(index) {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = `shooting-star shooting-star-${index}`;
+            starryBackground.appendChild(shootingStar);
+        }
+        
+        createShootingStar(1);
+        createShootingStar(2);
+        createShootingStar(3);
+        
+        // Agregar al DOM
+        document.body.insertBefore(starryBackground, document.body.firstChild);
+        
+        console.log('✨ Fondo estrellado creado con 350+ estrellas');
+    }
+    
+    // Función para optimizar estrellas en móvil
+    function optimizeStarsForMobile() {
+        if (window.innerWidth <= 768) {
+            const stars = document.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                // Reducir número de estrellas en móvil
+                if (index % 3 === 0) {
+                    star.style.display = 'none';
+                }
+            });
+            console.log('📱 Estrellas optimizadas para móvil');
+        }
+    }
+    
+    // Función para toggle del fondo estrellado
+    function toggleStarryBackground() {
+        const starryBg = document.querySelector('.starry-background');
+        if (starryBg) {
+            starryBg.style.display = starryBg.style.display === 'none' ? 'block' : 'none';
+        }
+    }
+    
+    // Inicializar fondo estrellado
+    function initStarryBackground() {
+        // Crear las estrellas
+        createStarryBackground();
+        
+        // Optimizar para móvil
+        optimizeStarsForMobile();
+        
+        // Re-optimizar en resize
+        window.addEventListener('resize', () => {
+            clearTimeout(window.starResizeTimeout);
+            window.starResizeTimeout = setTimeout(optimizeStarsForMobile, 500);
+        });
+    }
+    
+    // Agregar a la inicialización principal (agregar después de init())
+    initStarryBackground();
+    
+    // Extender API pública
+    if (typeof window !== 'undefined' && window.NaturalGroove) {
+        Object.assign(window.NaturalGroove, {
+            // Funciones del fondo estrellado
+            toggleStars: toggleStarryBackground,
+            recreateStars: () => {
+                const existing = document.querySelector('.starry-background');
+                if (existing) existing.remove();
+                createStarryBackground();
+            },
+            getStarCount: () => document.querySelectorAll('.star').length
+        });
+    }
+
 });
