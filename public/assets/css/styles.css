@@ -223,8 +223,8 @@ nav {
     display: none;
     flex-direction: column;
     justify-content: space-around;
-    width: 30px;
-    height: 25px;
+    width: 32px;
+    height: 35px;
     background: transparent;
     border: none;
     cursor: pointer;
