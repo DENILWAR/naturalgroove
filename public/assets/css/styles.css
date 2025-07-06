@@ -28,10 +28,121 @@
         20px 20px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* ===== FONDO CON EFECTO DE LAVA DORADA FLUIDA ===== */
+html {
+    /* Imagen de fondo principal */
+    background: url('/assets/images/background-image.jpg') center center / cover no-repeat, var(--color-bg);
+    min-height: 100vh;
+    min-width: 100vw;
+}
+
+/* Capa de puntos de lava dorada */
+html::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -10;
+    background: 
+        /* Puntos de lava principales */
+        radial-gradient(circle 80px at 20% 30%, 
+            rgba(255, 215, 0, 0.6) 0%,
+            rgba(255, 140, 0, 0.4) 40%,
+            rgba(255, 69, 0, 0.2) 70%,
+            transparent 100%
+        ),
+        radial-gradient(circle 100px at 75% 20%, 
+            rgba(255, 140, 0, 0.7) 0%,
+            rgba(255, 215, 0, 0.5) 30%,
+            rgba(255, 69, 0, 0.3) 60%,
+            transparent 100%
+        ),
+        radial-gradient(circle 60px at 15% 75%, 
+            rgba(255, 69, 0, 0.8) 0%,
+            rgba(255, 140, 0, 0.6) 35%,
+            rgba(255, 215, 0, 0.3) 65%,
+            transparent 100%
+        ),
+        radial-gradient(circle 90px at 85% 65%, 
+            rgba(255, 215, 0, 0.5) 0%,
+            rgba(255, 165, 0, 0.4) 40%,
+            rgba(255, 69, 0, 0.2) 70%,
+            transparent 100%
+        ),
+        radial-gradient(circle 50px at 50% 50%, 
+            rgba(255, 140, 0, 0.6) 0%,
+            rgba(255, 69, 0, 0.4) 50%,
+            transparent 100%
+        ),
+        radial-gradient(circle 40px at 30% 15%, 
+            rgba(255, 215, 0, 0.7) 0%,
+            rgba(255, 140, 0, 0.4) 60%,
+            transparent 100%
+        ),
+        radial-gradient(circle 35px at 70% 85%, 
+            rgba(255, 69, 0, 0.6) 0%,
+            rgba(255, 140, 0, 0.3) 70%,
+            transparent 100%
+        );
+    
+    pointer-events: none;
+    animation: lavaGlow 18s ease-in-out infinite;
+}
+
+/* Capa de texto repetido */
+html::after {
+    content: 'Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • ';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200vw;
+    height: 200vh;
+    z-index: -9;
+    font-size: 10px;
+    color: rgba(255, 140, 0, 0.08);
+    text-shadow: 0 0 2px rgba(255, 215, 0, 0.4);
+    font-weight: 300;
+    line-height: 16px;
+    word-wrap: break-word;
+    pointer-events: none;
+    white-space: normal;
+    overflow: hidden;
+    font-family: monospace;
+    letter-spacing: 0.5px;
+    transform: rotate(-15deg);
+    transform-origin: center;
+    animation: textGlow 15s ease-in-out infinite;
+}
+
+/* Animaciones */
+@keyframes lavaGlow {
+    0%, 100% {
+        opacity: 0.8;
+        filter: blur(0px) brightness(1);
+    }
+    50% {
+        opacity: 1;
+        filter: blur(1px) brightness(1.1);
+    }
+}
+
+@keyframes textGlow {
+    0%, 100% {
+        color: rgba(255, 140, 0, 0.08);
+        text-shadow: 0 0 2px rgba(255, 215, 0, 0.4);
+    }
+    50% {
+        color: rgba(255, 165, 0, 0.12);
+        text-shadow: 0 0 3px rgba(255, 215, 0, 0.6);
+    }
+}
+
 /* Optimización de renderizado y fuentes */
 body {
     font-family: var(--font-main);
-    background-color: var(--color-bg);
+    background-color: transparent;
     color: var(--color-text);
     overflow-x: hidden;
     /* Optimizaciones de renderizado */
@@ -41,7 +152,7 @@ body {
     scroll-behavior: smooth;
 }
 
-/* ===== HEADER OPTIMIZADO ===== */
+/* ===== HEADER RESPONSIVO OPTIMIZADO ===== */
 header {
     position: fixed;
     top: 0;
@@ -50,47 +161,167 @@ header {
     padding: 20px 40px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     will-change: transform;
     transform: translateZ(0);
     text-shadow: var(--shadow-depth);
+    transition: all 0.3s ease;
 }
 
 nav {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
 }
 
 .logo {
     font-weight: var(--font-weight-bold);
     letter-spacing: 1px;
+    font-size: 1.2rem;
+    z-index: 1001;
 }
 
+/* Menú principal */
 .menu {
     display: flex;
     list-style: none;
+    gap: 30px;
+    align-items: center;
 }
 
 .menu li {
-    margin-left: 30px;
+    margin: 0;
 }
 
 .menu a {
     color: var(--color-text);
     text-decoration: none;
     font-weight: var(--font-weight-medium);
-    transition: opacity 0.3s ease;
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .menu a:hover {
-    opacity: 0.7;
     color: #ffc700;
+    background: rgba(255, 199, 0, 0.1);
     text-shadow: 
-    0 0 20px rgba(255, 199, 0, 0.8),
-    0 0 40px rgba(255, 199, 0, 0.6),
-    0 0 60px rgba(255, 199, 0, 0.4);
+        0 0 20px rgba(255, 199, 0, 0.8),
+        0 0 40px rgba(255, 199, 0, 0.6),
+        0 0 60px rgba(255, 199, 0, 0.4);
+}
+
+/* Botón de menú móvil */
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
+
+.mobile-menu-btn span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background: var(--color-text);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.mobile-menu-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Menú móvil overlay */
+.mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    z-index: 999;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-overlay.active {
+    opacity: 1;
+}
+
+.mobile-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mobile-menu li {
+    margin: 20px 0;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-overlay.active .mobile-menu li {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.mobile-menu-overlay.active .mobile-menu li:nth-child(1) { transition-delay: 0.1s; }
+.mobile-menu-overlay.active .mobile-menu li:nth-child(2) { transition-delay: 0.2s; }
+.mobile-menu-overlay.active .mobile-menu li:nth-child(3) { transition-delay: 0.3s; }
+.mobile-menu-overlay.active .mobile-menu li:nth-child(4) { transition-delay: 0.4s; }
+.mobile-menu-overlay.active .mobile-menu li:nth-child(5) { transition-delay: 0.5s; }
+.mobile-menu-overlay.active .mobile-menu li:nth-child(6) { transition-delay: 0.6s; }
+
+.mobile-menu a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: var(--font-weight-semibold);
+    font-size: 2rem;
+    padding: 15px 30px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: block;
+}
+
+.mobile-menu a:hover {
+    color: #ffc700;
+    background: rgba(255, 199, 0, 0.1);
+    text-shadow: 
+        0 0 20px rgba(255, 199, 0, 0.8),
+        0 0 40px rgba(255, 199, 0, 0.6);
+    transform: scale(1.05);
 }
 
 /* ===== SECCIONES OPTIMIZADAS ===== */
@@ -848,10 +1079,17 @@ p {
     .product-center {
         transition: none !important;
     }
+    
+    html::before,
+    html::after {
+        animation: none !important;
+    }
 }
 
-/* ===== RESPONSIVE DESIGN OPTIMIZADO ===== */
-@media (max-width: 1200px) {
+/* ===== RESPONSIVE DESIGN COMPLETO ===== */
+
+/* Tablets y pantallas medianas (768px - 1024px) */
+@media (max-width: 1024px) {
     .section {
         padding: 70px 30px;
     }
@@ -860,15 +1098,103 @@ p {
         width: 350px;
         height: 350px;
     }
+    
+    h1 {
+        font-size: clamp(2.5rem, 7vw, 4.5rem);
+    }
+    
+    h2 {
+        font-size: clamp(2rem, 5.5vw, 3.5rem);
+    }
+    
+    .chrome-object {
+        opacity: 0.8;
+    }
+    
+    /* Ajustar layout en tablets */
+    .team-members,
+    .projects-container,
+    .stats,
+    .quarters {
+        gap: 15px;
+    }
+    
+    .member,
+    .project,
+    .stat,
+    .quarter {
+        width: calc(50% - 15px);
+    }
 }
 
-@media (max-width: 992px) {
+/* Tablets pequeñas y móviles grandes (768px) */
+@media (max-width: 768px) {
+    /* Header móvil */
+    header {
+        padding: 15px 20px;
+    }
+    
+    .menu {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: flex;
+    }
+    
+    .mobile-menu-overlay {
+        display: block;
+    }
+    
+    /* Secciones */
+    .section {
+        padding: 80px 20px 60px;
+        min-height: auto;
+    }
+    
+    .section:first-of-type {
+        padding-top: 120px;
+    }
+    
+    /* Tipografía móvil */
+    h1 {
+        font-size: clamp(2rem, 6vw, 3.5rem);
+        margin-bottom: 20px;
+    }
+    
+    h2 {
+        font-size: clamp(1.8rem, 5vw, 2.8rem);
+        margin-bottom: 30px;
+    }
+    
+    h3 {
+        font-size: clamp(1.3rem, 4vw, 1.8rem);
+        margin-bottom: 15px;
+    }
+    
+    p {
+        font-size: clamp(0.9rem, 2.8vw, 1.1rem);
+        margin-bottom: 20px;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+    }
+    
+    .small-text {
+        font-size: 0.8rem;
+        margin-bottom: 15px;
+    }
+    
+    /* Layout móvil */
     .team-members,
     .projects-container,
     .stats,
     .quarters {
         flex-direction: column;
         align-items: center;
+        gap: 20px;
     }
     
     .member,
@@ -879,46 +1205,11 @@ p {
         max-width: 400px;
     }
     
+    /* Productos círculo móvil */
     .product-circle {
-        width: 300px;
-        height: 300px;
-    }
-    
-    .chrome-object {
-        opacity: 0.7;
-    }
-}
-
-@media (max-width: 768px) {
-    header {
-        padding: 15px 20px;
-    }
-    
-    .section {
-        padding: 60px 20px;
-    }
-    
-    .menu {
-        display: none;
-    }
-    
-    .chrome-object {
-        opacity: 0.5;
-    }
-    
-    .contact-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .contact-label {
-        margin-bottom: 5px;
-        margin-right: 0;
-    }
-    
-    .product-circle {
-        width: 250px;
-        height: 250px;
+        width: 280px;
+        height: 280px;
+        margin: 30px auto;
     }
     
     .product-center {
@@ -929,19 +1220,283 @@ p {
     .product-center span {
         font-size: 1.5rem;
     }
-}
-
-@media (max-width: 480px) {
-    .section {
-        padding: 40px 15px;
+    
+    .product-dot {
+        width: 14px;
+        height: 14px;
     }
     
+    .product-dot span {
+        font-size: 0.8rem;
+        top: -30px;
+    }
+    
+    /* Chrome objects móvil */
+    .chrome-object {
+        opacity: 0.4;
+    }
+    
+    .obj-right-top {
+        width: 250%;
+        height: 150%;
+    }
+    
+    /* Contact móvil */
+    .contact-row {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+    
+    .contact-label {
+        margin-bottom: 5px;
+        margin-right: 0;
+        font-weight: var(--font-weight-bold);
+    }
+    
+    /* Quarter cards móvil */
     .quarter {
-        padding: 20px;
+        padding: 25px 20px;
+    }
+    
+    .quarter h3 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    
+    /* Stats móvil */
+    .stat-value {
+        font-size: 2rem;
+        margin-bottom: 8px;
+    }
+    
+    .stat-label {
+        font-size: 1rem;
+    }
+    
+    /* Texto de fondo móvil */
+    html::after {
+        font-size: 7px;
+        line-height: 12px;
+        letter-spacing: 0.3px;
+    }
+}
+
+/* Móviles pequeños (480px) */
+@media (max-width: 480px) {
+    /* Header extra pequeño */
+    header {
+        padding: 12px 15px;
+    }
+    
+    .logo {
+        font-size: 1rem;
+    }
+    
+    .mobile-menu-btn {
+        width: 25px;
+        height: 20px;
+    }
+    
+    .mobile-menu a {
+        font-size: 1.5rem;
+        padding: 12px 20px;
+    }
+    
+    /* Secciones extra pequeñas */
+    .section {
+        padding: 70px 15px 50px;
+    }
+    
+    .section:first-of-type {
+        padding-top: 100px;
+    }
+    
+    /* Tipografía extra pequeña */
+    h1 {
+        font-size: clamp(1.8rem, 8vw, 2.8rem);
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+    }
+    
+    h2 {
+        font-size: clamp(1.5rem, 6vw, 2.2rem);
+        margin-bottom: 25px;
+    }
+    
+    h3 {
+        font-size: clamp(1.2rem, 5vw, 1.6rem);
+        margin-bottom: 12px;
+    }
+    
+    p {
+        font-size: clamp(0.85rem, 3.5vw, 1rem);
+        line-height: 1.5;
+        margin-bottom: 18px;
+    }
+    
+    /* Layout extra pequeño */
+    .member,
+    .project,
+    .stat,
+    .quarter {
+        max-width: 320px;
     }
     
     .member-img {
-        width: 120px;
-        height: 120px;
+        width: 100px;
+        height: 100px;
+        margin-bottom: 15px;
+    }
+    
+    .member h4 {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+    }
+    
+    .role {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+    
+    /* Productos extra pequeño */
+    .product-circle {
+        width: 220px;
+        height: 220px;
+        margin: 25px auto;
+    }
+    
+    .product-center {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .product-center span {
+        font-size: 1.2rem;
+    }
+    
+    .product-dot {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .product-dot span {
+        font-size: 0.7rem;
+        top: -35px;
+    }
+    
+    /* Quarter cards extra pequeño */
+    .quarter {
+        padding: 20px 15px;
+    }
+    
+    .quarter h3 {
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+    }
+    
+    .quarter li {
+        margin-bottom: 12px;
+        font-size: 0.9rem;
+        padding-left: 15px;
+    }
+    
+    /* Stats extra pequeño */
+    .stat-value {
+        font-size: 1.8rem;
+        margin-bottom: 6px;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+    }
+    
+    /* Proyecto images extra pequeño */
+    .project-img {
+        height: 140px;
+        margin-bottom: 15px;
+    }
+    
+    /* Contact extra pequeño */
+    .contact-row {
+        margin-bottom: 15px;
+    }
+    
+    .contact-label {
+        font-size: 0.9rem;
+    }
+    
+    .contact-value {
+        font-size: 0.9rem;
+    }
+    
+    /* Chrome objects extra pequeño */
+    .chrome-object {
+        opacity: 0.2;
+    }
+    
+    /* Texto de fondo extra pequeño */
+    html::after {
+        font-size: 5px;
+        line-height: 8px;
+        letter-spacing: 0.2px;
+    }
+    
+    /* Website text */
+    .website {
+        font-size: 0.9rem;
+        margin-top: 30px;
+    }
+    
+    /* Bottom right text */
+    .bottom-right {
+        bottom: 20px;
+        right: 20px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Móviles muy pequeños (360px) */
+@media (max-width: 360px) {
+    .section {
+        padding: 60px 10px 40px;
+    }
+    
+    h1 {
+        font-size: clamp(1.6rem, 9vw, 2.4rem);
+    }
+    
+    h2 {
+        font-size: clamp(1.3rem, 7vw, 1.9rem);
+    }
+    
+    .product-circle {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .product-center {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .product-center span {
+        font-size: 1rem;
+    }
+    
+    .product-dot {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .mobile-menu a {
+        font-size: 1.3rem;
+        padding: 10px 15px;
+    }
+    
+    .member,
+    .project,
+    .quarter {
+        max-width: 280px;
     }
 }
