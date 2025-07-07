@@ -158,18 +158,104 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    padding: 20px 40px;
+    padding: 5px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(10px);
-    background: rgba(0, 0, 0, 0.3);
+    
+    /* Diseño original mejorado con efecto cristal dinámico */
+    backdrop-filter: blur(10px) saturate(150%) brightness(1.1);
+    -webkit-backdrop-filter: blur(10px) saturate(150%) brightness(1.1);
+    background: rgba(0, 0, 0, 0.551);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* Efecto cristal sutil */
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    
     will-change: transform;
     transform: translateZ(0);
     text-shadow: var(--shadow-depth);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Estado dinámico cuando haces scroll */
+header.scrolled {
+    /* Efecto cristal intenso al hacer scroll */
+    backdrop-filter: blur(25px) saturate(180%) brightness(1.2) contrast(1.1);
+    -webkit-backdrop-filter: blur(25px) saturate(180%) brightness(1.2) contrast(1.1);
+    
+    /* Fondo más definido pero manteniendo transparencia */
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(20, 20, 20, 0.6) 50%,
+        rgba(0, 0, 0, 0.7) 100%
+    );
+    
+    /* Borde más brillante */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    
+    /* Sombra cristal más pronunciada */
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 4px 16px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Efecto adicional de resplandor sutil en el header */
+header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.02) 25%,
+        rgba(255, 255, 255, 0.04) 50%,
+        rgba(255, 255, 255, 0.02) 75%,
+        transparent 100%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+header.scrolled::before {
+    opacity: 1;
+}
+
+/* Responsive - mantener rendimiento en móviles */
+@media (max-width: 768px) {
+    header {
+        padding: 15px 20px;
+        backdrop-filter: blur(8px) saturate(130%);
+        -webkit-backdrop-filter: blur(8px) saturate(130%);
+    }
+    
+    header.scrolled {
+        backdrop-filter: blur(15px) saturate(160%);
+        -webkit-backdrop-filter: blur(15px) saturate(160%);
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 12px 15px;
+        backdrop-filter: blur(6px) saturate(120%);
+        -webkit-backdrop-filter: blur(6px) saturate(120%);
+    }
+    
+    header.scrolled {
+        backdrop-filter: blur(12px) saturate(140%);
+        -webkit-backdrop-filter: blur(12px) saturate(140%);
+    }
 }
 
 nav {
@@ -179,11 +265,86 @@ nav {
     width: 100%;
 }
 
+/* SOLUCIÓN 1: Usar Flexbox (Recomendada) */
 .logo {
     font-weight: var(--font-weight-bold);
     letter-spacing: 1px;
     font-size: 1.2rem;
     z-index: 1001;
+    /* Añadir flexbox para centrar */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre logo e imagen */
+}
+
+.minilogo {
+    height: 45px;
+    /* Remover padding-top negativo que puede causar problemas */
+    padding-top: 0;
+}
+
+/* SOLUCIÓN 2: Alternativa con inline-flex */
+.logo-alternative {
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 1px;
+    font-size: 1.2rem;
+    z-index: 1001;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* SOLUCIÓN 3: Si prefieres mantener el estilo original con ajustes */
+.logo-original-fix {
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 1px;
+    font-size: 1.2rem;
+    z-index: 1001;
+    /* Añadir line-height para mejor alineación */
+    line-height: 45px; /* Igual que la altura de la imagen */
+}
+
+.minilogo-original-fix {
+    height: 45px;
+    padding-top: 0;
+    /* Alineación vertical */
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+/* SOLUCIÓN 4: Con Grid (para más control) */
+.logo-grid {
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 1px;
+    font-size: 1.2rem;
+    z-index: 1001;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Responsive - ajustar en móviles */
+@media (max-width: 768px) {
+    .logo {
+        font-size: 1.5rem;
+        gap: 8px;
+    }
+    
+    .minilogo {
+        height: 35px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 0.9rem;
+        gap: 6px;
+    }
+    
+    .minilogo {
+        height: 30px;
+    }
 }
 
 /* Menú principal */
@@ -216,6 +377,13 @@ nav {
         0 0 20px rgba(255, 199, 0, 0.8),
         0 0 40px rgba(255, 199, 0, 0.6),
         0 0 60px rgba(255, 199, 0, 0.4);
+}
+
+.minilogo 
+{
+    padding-top: -100%;
+    height: 45px;
+    align-items: center;
 }
 
 /* Botón de menú móvil */
