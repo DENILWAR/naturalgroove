@@ -158,12 +158,11 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    padding: 5px 40px;
+    padding: 0px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 1000;
-    
     /* Diseño original mejorado con efecto cristal dinámico */
     backdrop-filter: blur(10px) saturate(150%) brightness(1.1);
     -webkit-backdrop-filter: blur(10px) saturate(150%) brightness(1.1);
@@ -278,7 +277,7 @@ nav {
 }
 
 .minilogo {
-    height: 45px;
+    height: 50px;
     /* Remover padding-top negativo que puede causar problemas */
     padding-top: 0;
 }
@@ -305,7 +304,7 @@ nav {
 }
 
 .minilogo-original-fix {
-    height: 45px;
+    height: 44px;
     padding-top: 0;
     /* Alineación vertical */
     vertical-align: middle;
@@ -382,7 +381,7 @@ nav {
 .minilogo 
 {
     padding-top: -100%;
-    height: 45px;
+    height: 50px;
     align-items: center;
 }
 
@@ -717,7 +716,7 @@ p {
     top: 20%;
     left: -125%;
     width: 350%;
-    height: 200%;
+    height: 300%;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
