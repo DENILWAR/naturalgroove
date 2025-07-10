@@ -716,12 +716,12 @@ p {
     top: 20%;
     left: -125%;
     width: 350%;
-    height: 300%;
+    height: 200%;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     animation: floatSmoothOptimized 6s ease-in-out infinite;
-    background-image: url('/assets/images/golsilversurfer.png');
+    background-image: url('/assets/images/NOBGSilver.png');
     z-index: -1;
     filter: 
     drop-shadow(0 0 20px rgba(255, 199, 0, 0.8)),    
