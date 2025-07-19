@@ -8,8 +8,8 @@
         "originalPrice": null,
         "currency": "EUR",
         "images": {
-          "front": "assets/images/products/shirt-001-front.jpg",
-          "back": "assets/images/products/shirt-001-back.jpg",
+          "front": "assets/images/cotonshirt.png",
+          "back": "assets/images/cotonshirt.png",
           "thumbnail": "assets/images/products/shirt-001-thumb.jpg"
         },
         "sizes": ["S", "M", "L", "XL"],
