@@ -475,8 +475,9 @@ nav {
     transform: rotate(-45deg) translate(6px, -6px);
 }
 
-/* Menú móvil overlay */
+/* Menú móvil overlay - CORREGIDO */
 .mobile-menu-overlay {
+    /* CRÍTICO: display none por defecto para no bloquear toques */
     display: none;
     position: fixed;
     top: 0;
@@ -485,13 +486,20 @@ nav {
     height: 100%;
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     z-index: 999;
     opacity: 0;
-    transition: all 0.3s ease;
+    visibility: hidden;
+    pointer-events: none; /* No interceptar eventos cuando oculto */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
+/* Solo mostrar cuando tiene clase active */
 .mobile-menu-overlay.active {
+    display: flex; /* Cambiar a flex para centrar contenido */
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto; /* Interceptar eventos cuando visible */
 }
 
 .mobile-menu {
@@ -1363,8 +1371,15 @@ p {
         display: flex;
     }
     
+    /* CRÍTICO: NO poner display:block aquí - el overlay debe permanecer oculto
+       hasta que se active con JavaScript */
     .mobile-menu-overlay {
-        display: block;
+        /* Solo preparar estilos, no mostrar */
+        /* display se controla con la clase .active */
+    }
+    
+    .mobile-menu-overlay.active {
+        display: flex;
     }
     
     /* Secciones */

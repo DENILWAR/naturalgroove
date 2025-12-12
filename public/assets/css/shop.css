@@ -3,6 +3,21 @@
  * Con fixes para iOS/móvil
  */
 
+/* ===== FIX CRÍTICO: MENÚ MÓVIL OVERLAY ===== */
+/* Asegurar que el overlay no bloquee toques cuando está oculto */
+.mobile-menu-overlay {
+    display: none !important;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.mobile-menu-overlay.active {
+    display: flex !important;
+    pointer-events: auto;
+    visibility: visible;
+    opacity: 1;
+}
+
 /* ===== CRITICAL: FIXES PARA iOS Y MÓVIL ===== */
 
 /* Asegurar que los elementos sean clickeables en iOS */

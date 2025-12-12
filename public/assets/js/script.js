@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
         parallaxSpeed: 0.08,
         floatInterval: 4000,
         floatDuration: 2000,
-        letterFlickerChance: 0.075, // 1.5% de probabilidad por letra cada segundo
+        letterFlickerChance: 0.075,
         letterFlickerDuration: 500,
         mobileBreakpoint: 768,
         reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -13,14 +13,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Cache de elementos DOM
     const DOM = {
-        navLinks: document.querySelectorAll('nav a[href^="#"]'), // Solo links que empiecen con #
+        navLinks: document.querySelectorAll('nav a[href^="#"]'),
         mainTitles: document.querySelectorAll('#home h1'),
-        chromeObjects: null, // Se inicializa después
+        chromeObjects: null,
         allSections: document.querySelectorAll('.section'),
         productCircle: document.querySelector('.product-circle'),
-        productLabels: null, // Se inicializa después
-        productDots: null, // Se inicializa después
-        centerShop: null // Se inicializa después
+        productLabels: null,
+        productDots: null,
+        centerShop: null
     };
     
     // Estados globales
@@ -28,6 +28,25 @@ document.addEventListener('DOMContentLoaded', function() {
     let isMobile = window.innerWidth <= CONFIG.mobileBreakpoint;
     let objectStates = new Map();
     let letterFlickerTimeouts = new Map();
+    
+    // ===== FIX CRÍTICO: ASEGURAR QUE EL OVERLAY ESTÉ OCULTO AL INICIO =====
+    function fixMobileOverlay() {
+        const mobileOverlay = document.querySelector('.mobile-menu-overlay');
+        if (mobileOverlay && !mobileOverlay.classList.contains('active')) {
+            mobileOverlay.style.display = 'none';
+            mobileOverlay.style.pointerEvents = 'none';
+            mobileOverlay.style.visibility = 'hidden';
+            mobileOverlay.style.opacity = '0';
+        }
+        
+        // También asegurar que los chrome-objects no bloqueen toques
+        document.querySelectorAll('.chrome-object').forEach(obj => {
+            obj.style.pointerEvents = 'none';
+        });
+    }
+    
+    // Ejecutar fix inmediatamente
+    fixMobileOverlay();
     
     // ===== NAVEGACIÓN SUAVE OPTIMIZADA =====
     function initNavigation() {
@@ -54,33 +73,26 @@ document.addEventListener('DOMContentLoaded', function() {
             title.innerHTML = '';
             title.setAttribute('data-text', text);
             
-            // Crear contenedor para las letras
             const letterContainer = document.createElement('div');
             letterContainer.className = 'neon-letters-container';
             
-            // Crear cada letra como elemento independiente
             for (let i = 0; i < text.length; i++) {
                 const char = text[i];
                 const span = document.createElement('span');
                 span.className = 'neon-letter';
-                span.textContent = char === ' ' ? '\u00A0' : char; // Preservar espacios
+                span.textContent = char === ' ' ? '\u00A0' : char;
                 span.setAttribute('data-letter-index', i);
                 span.setAttribute('data-title-index', titleIndex);
-                
-                // Estado inicial normal
                 span.setAttribute('data-state', 'normal');
-                
                 letterContainer.appendChild(span);
             }
             
             title.appendChild(letterContainer);
         });
         
-        // Iniciar sistema de parpadeo aleatorio
         startLetterFlickerSystem();
     }
     
-    // Sistema de parpadeo aleatorio por letras
     function startLetterFlickerSystem() {
         const allLetters = document.querySelectorAll('.neon-letter');
         
@@ -88,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (CONFIG.reducedMotion) return;
             
             allLetters.forEach(letter => {
-                // Solo aplicar a letras que no están espacios y no están ya parpadeando
                 if (letter.textContent.trim() && letter.getAttribute('data-state') === 'normal') {
                     if (Math.random() < CONFIG.letterFlickerChance) {
                         flickerLetter(letter);
@@ -96,28 +107,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Siguiente check en 1 segundo
             setTimeout(randomFlicker, 1000);
         }
         
-        // Iniciar después de 2 segundos para dar tiempo a cargar
         setTimeout(randomFlicker, 300);
     }
     
-    // Función para hacer parpadear una letra específica
     function flickerLetter(letter) {
         const letterId = letter.getAttribute('data-letter-index') + '_' + letter.getAttribute('data-title-index');
         
-        // Evitar múltiples parpadeos simultáneos en la misma letra
         if (letterFlickerTimeouts.has(letterId)) {
             clearTimeout(letterFlickerTimeouts.get(letterId));
         }
         
-        // Cambiar estado a flickering
         letter.setAttribute('data-state', 'flickering');
         letter.classList.add('letter-flickering');
         
-        // Volver a normal después del tiempo definido
         const timeoutId = setTimeout(() => {
             letter.setAttribute('data-state', 'normal');
             letter.classList.remove('letter-flickering');
@@ -127,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         letterFlickerTimeouts.set(letterId, timeoutId);
     }
     
-    // ===== PRELOAD DE IMÁGENES OPTIMIZADO =====
+    // ===== PRELOAD DE IMÁGENES =====
     function preloadCriticalImages() {
         const criticalImages = [
             'images/chrome2.png',
@@ -147,13 +152,14 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(fragment);
     }
     
-    // ===== CHROME OBJECTS OPTIMIZADOS =====
+    // ===== CHROME OBJECTS =====
     function initChromeObjects() {
-        // Filtrar objetos que no sean obj-right-top
         DOM.chromeObjects = document.querySelectorAll('.chrome-object:not(.obj-right-top)');
         
-        // Inicializar estados solo una vez
         DOM.chromeObjects.forEach(obj => {
+            // CRÍTICO: Asegurar que no bloqueen toques
+            obj.style.pointerEvents = 'none';
+            
             objectStates.set(obj, {
                 floatX: 0,
                 floatY: 0,
@@ -165,13 +171,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Iniciar animaciones si no está en modo reducido
         if (!CONFIG.reducedMotion) {
             startFloatingAnimation();
         }
     }
     
-    // Función de animación de flotación optimizada
     function animateFloating() {
         if (CONFIG.reducedMotion) return;
         
@@ -181,7 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             state.isAnimating = true;
             
-            // Valores aleatorios más suaves para móvil
             const maxMovement = isMobile ? 10 : 20;
             const maxRotation = isMobile ? 1.5 : 3;
             
@@ -189,12 +192,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetFloatY = (Math.random() - 0.5) * maxMovement;
             const targetRotate = (Math.random() - 0.5) * maxRotation;
             
-            // Animación usando requestAnimationFrame con easing
             animateToPosition(obj, state, targetFloatX, targetFloatY, targetRotate);
         });
     }
     
-    // Función de animación suave con easing
     function animateToPosition(obj, state, targetX, targetY, targetRotate) {
         const startTime = performance.now();
         const startX = state.floatX;
@@ -205,17 +206,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / CONFIG.floatDuration, 1);
             
-            // Easing suave (easeInOutCubic)
             const easeProgress = progress < 0.5 
                 ? 4 * progress * progress * progress
                 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
             
-            // Interpolación
             state.floatX = startX + (targetX - startX) * easeProgress;
             state.floatY = startY + (targetY - startY) * easeProgress;
             state.floatRotate = startRotate + (targetRotate - startRotate) * easeProgress;
             
-            // Aplicar transformación
             updateObjectTransform(obj);
             
             if (progress < 1) {
@@ -228,7 +226,6 @@ document.addEventListener('DOMContentLoaded', function() {
         requestAnimationFrame(animate);
     }
     
-    // Función para actualizar transformación combinada optimizada
     function updateObjectTransform(obj) {
         const state = objectStates.get(obj);
         if (!state) return;
@@ -236,23 +233,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalX = state.parallaxX + state.floatX;
         const totalY = state.parallaxY + state.floatY;
         
-        // Usar transform3d para activar aceleración GPU
         obj.style.transform = `translate3d(${totalX}px, ${totalY}px, 0) rotate(${state.floatRotate}deg)`;
     }
     
-    // Iniciar animación de flotación
     function startFloatingAnimation() {
         if (CONFIG.reducedMotion) return;
         
-        // Ejecutar inmediatamente
         animateFloating();
         
-        // Configurar intervalo (menos frecuente en móvil)
         const interval = isMobile ? CONFIG.floatInterval * 2 : CONFIG.floatInterval;
         setInterval(animateFloating, interval);
     }
     
-    // ===== PARALLAX SCROLL OPTIMIZADO =====
+    // ===== PARALLAX SCROLL =====
     function updateParallax() {
         if (CONFIG.reducedMotion) return;
         
@@ -264,7 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const parallaxY = -scrollPosition * CONFIG.parallaxSpeed;
             
-            // Parallax X basado en clase del objeto
             let parallaxX = 0;
             const classList = obj.classList;
             if (classList.contains('obj-right') || 
@@ -279,7 +271,6 @@ document.addEventListener('DOMContentLoaded', function() {
             state.parallaxX = parallaxX;
             state.parallaxY = parallaxY;
             
-            // Actualizar solo si no está animando flotación
             if (!state.isAnimating) {
                 updateObjectTransform(obj);
             }
@@ -295,9 +286,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // ===== INTERSECTION OBSERVER OPTIMIZADO =====
+    // ===== INTERSECTION OBSERVER =====
     function initSectionObserver() {
-        // Configurar estilos iniciales de manera más eficiente
         const initialStyles = `
             .section {
                 opacity: 0;
@@ -306,7 +296,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         `;
         
-        // Agregar estilos solo si no existe
         if (!document.getElementById('section-initial-styles')) {
             const style = document.createElement('style');
             style.id = 'section-initial-styles';
@@ -314,14 +303,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.head.appendChild(style);
         }
         
-        // Intersection Observer con configuración optimizada
         const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0)';
-                    // Opcional: dejar de observar después de animar
-                    // sectionObserver.unobserve(entry.target);
                 }
             });
         }, {
@@ -329,17 +315,15 @@ document.addEventListener('DOMContentLoaded', function() {
             rootMargin: '0px 0px -50px 0px'
         });
         
-        // Observar todas las secciones
         DOM.allSections.forEach(section => {
             sectionObserver.observe(section);
         });
     }
     
-    // ===== CÍRCULO DE PRODUCTOS OPTIMIZADO =====
+    // ===== CÍRCULO DE PRODUCTOS =====
     function initProductCircle() {
         if (!DOM.productCircle) return;
         
-        // Cachear elementos de productos
         DOM.productLabels = document.querySelectorAll('.product-dot span');
         DOM.productDots = document.querySelectorAll('.product-dot');
         DOM.centerShop = document.querySelector('.product-center');
@@ -348,7 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let isHovered = false;
         let animationId;
         
-        // Event listeners optimizados para el círculo
         DOM.productCircle.addEventListener('mouseenter', () => {
             isHovered = true;
         }, { passive: true });
@@ -357,14 +340,12 @@ document.addEventListener('DOMContentLoaded', function() {
             isHovered = false;
         }, { passive: true });
         
-        // Event listeners específicos para productos (pausar rotación en hover individual)
         DOM.productDots.forEach(dot => {
             dot.addEventListener('mouseenter', () => {
                 isHovered = true;
             }, { passive: true });
             
             dot.addEventListener('mouseleave', () => {
-                // Pequeño delay antes de reanudar rotación
                 setTimeout(() => {
                     if (!DOM.productCircle.matches(':hover')) {
                         isHovered = false;
@@ -373,7 +354,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, { passive: true });
         });
         
-        // Event listener para el botón central
         if (DOM.centerShop) {
             DOM.centerShop.addEventListener('mouseenter', () => {
                 isHovered = true;
@@ -388,13 +368,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }, { passive: true });
         }
         
-        // Función de animación unificada
         function animateCircle() {
             if (!CONFIG.reducedMotion && !isHovered) {
                 rotation += 0.2;
                 DOM.productCircle.style.transform = `rotate(${rotation}deg)`;
                 
-                // Actualizar etiquetas para que se mantengan legibles
                 DOM.productLabels.forEach(label => {
                     label.style.transform = `translateX(-50%) rotate(${-rotation}deg)`;
                 });
@@ -403,12 +381,10 @@ document.addEventListener('DOMContentLoaded', function() {
             animationId = requestAnimationFrame(animateCircle);
         }
         
-        // Iniciar animación solo si no hay movimiento reducido
         if (!CONFIG.reducedMotion) {
             animateCircle();
         }
         
-        // Limpieza en caso de necesidad
         return () => {
             if (animationId) {
                 cancelAnimationFrame(animationId);
@@ -416,10 +392,8 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
-    // ===== EFECTOS DE HOVER CON DELEGACIÓN =====
+    // ===== EFECTOS DE HOVER =====
     function initHoverEffects() {
-        // Usar delegación de eventos para mejor performance
-        // Excluir los product-dot y product-center ya que tienen sus propios efectos
         document.addEventListener('mouseenter', function(e) {
             if (e.target.matches('a:not(nav a):not(.product-dot):not(.product-center), .member, .project')) {
                 e.target.style.transform = 'scale(1.05)';
@@ -434,16 +408,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }, true);
     }
     
-    // ===== OPTIMIZACIÓN PARA MÓVILES =====
+    // ===== OPTIMIZACIÓN MÓVIL =====
     function handleMobileOptimizations() {
         if (isMobile) {
-            // Reducir la frecuencia de parpadeo de letras en móvil
-            CONFIG.letterFlickerChance = 0.008; // Reducir a la mitad
+            CONFIG.letterFlickerChance = 0.008;
             
-            // Agregar estilos específicos para móvil
             const mobileStyles = `
                 .chrome-object {
                     opacity: 0.6;
+                    pointer-events: none !important;
                 }
                 .neon-letter {
                     will-change: auto;
@@ -454,14 +427,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             `;
             
-            const mobileStyleElement = document.createElement('style');
-            mobileStyleElement.id = 'mobile-optimizations';
-            mobileStyleElement.textContent = mobileStyles;
-            document.head.appendChild(mobileStyleElement);
+            if (!document.getElementById('mobile-optimizations')) {
+                const mobileStyleElement = document.createElement('style');
+                mobileStyleElement.id = 'mobile-optimizations';
+                mobileStyleElement.textContent = mobileStyles;
+                document.head.appendChild(mobileStyleElement);
+            }
         }
     }
     
-    // ===== MANEJO DE RESIZE OPTIMIZADO =====
+    // ===== RESIZE HANDLER =====
     function initResizeHandler() {
         let resizeTimeout;
         
@@ -479,12 +454,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ===== INICIALIZACIÓN PRINCIPAL =====
     function init() {
-        console.log('🚀 Natural Groove - Inicializando optimizado...');
+        console.log('🚀 Natural Groove - Inicializando...');
         
-        // Preload crítico
+        // FIX: Asegurar overlay oculto primero
+        fixMobileOverlay();
+        
         preloadCriticalImages();
-        
-        // Inicializar componentes en orden de prioridad
         initNavigation();
         createNeonLetters();
         initChromeObjects();
@@ -494,18 +469,15 @@ document.addEventListener('DOMContentLoaded', function() {
         handleMobileOptimizations();
         initResizeHandler();
         
-        // Event listeners optimizados
         window.addEventListener('scroll', requestTick, { passive: true });
         
         console.log('✅ Natural Groove - Inicialización completa');
         console.log('📱 Dispositivo móvil:', isMobile);
-        console.log('🎭 Animaciones reducidas:', CONFIG.reducedMotion);
     }
     
-    // Ejecutar inicialización
     init();
     
-    // ===== API PÚBLICA PARA DEBUGGING =====
+    // ===== API PÚBLICA =====
     if (typeof window !== 'undefined') {
         window.NaturalGroove = {
             flickerLetter: (letterIndex, titleIndex = 0) => {
@@ -517,32 +489,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Movimiento reducido:', CONFIG.reducedMotion);
             },
             getConfig: () => CONFIG,
-            getObjectStates: () => objectStates,
-            // Nuevas funciones para productos
-            getProductElements: () => ({
-                circle: DOM.productCircle,
-                dots: DOM.productDots,
-                labels: DOM.productLabels,
-                centerShop: DOM.centerShop
-            })
+            getObjectStates: () => objectStates
         };
     }
 
-    
-    
-
-// ===== MENÚ MÓVIL RESPONSIVO =====
-    
-    // Elementos del menú móvil
+    // ===== MENÚ MÓVIL RESPONSIVO - CORREGIDO =====
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
     const mobileMenuLinks = document.querySelectorAll('.mobile-menu a');
     const body = document.body;
     
-    // Variable para controlar el estado del menú
     let isMenuOpen = false;
     
-    // Función para abrir/cerrar el menú
+    // Función para abrir/cerrar el menú - CORREGIDA
     function toggleMobileMenu() {
         isMenuOpen = !isMenuOpen;
         
@@ -550,30 +509,60 @@ document.addEventListener('DOMContentLoaded', function() {
             // Abrir menú
             mobileMenuBtn.classList.add('active');
             mobileMenuOverlay.classList.add('active');
-            body.style.overflow = 'hidden'; // Prevenir scroll del body
+            // CRÍTICO: Cambiar display y pointer-events
+            mobileMenuOverlay.style.display = 'flex';
+            mobileMenuOverlay.style.pointerEvents = 'auto';
+            mobileMenuOverlay.style.visibility = 'visible';
+            mobileMenuOverlay.style.opacity = '1';
+            body.style.overflow = 'hidden';
         } else {
             // Cerrar menú
             mobileMenuBtn.classList.remove('active');
             mobileMenuOverlay.classList.remove('active');
-            body.style.overflow = ''; // Restaurar scroll del body
-        }
-    }
-    
-    // Función para inicializar el menú móvil
-    function initMobileMenu() {
-        // Event listener para el botón del menú
-        if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            // CRÍTICO: Ocultar completamente
+            mobileMenuOverlay.style.opacity = '0';
+            mobileMenuOverlay.style.pointerEvents = 'none';
+            mobileMenuOverlay.style.visibility = 'hidden';
+            // Delay para la animación antes de ocultar
+            setTimeout(() => {
+                if (!isMenuOpen) {
+                    mobileMenuOverlay.style.display = 'none';
+                }
+            }, 300);
+            body.style.overflow = '';
         }
         
-        // Event listener para cerrar menú al hacer clic en un enlace
+        console.log('Menu toggled:', isMenuOpen);
+    }
+    
+    // Inicializar menú móvil
+    function initMobileMenu() {
+        // Asegurar estado inicial correcto
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.style.display = 'none';
+            mobileMenuOverlay.style.pointerEvents = 'none';
+            mobileMenuOverlay.style.visibility = 'hidden';
+            mobileMenuOverlay.style.opacity = '0';
+            mobileMenuOverlay.classList.remove('active');
+        }
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.classList.remove('active');
+            mobileMenuBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleMobileMenu();
+            });
+        }
+        
         mobileMenuLinks.forEach(link => {
             link.addEventListener('click', () => {
-                toggleMobileMenu();
+                if (isMenuOpen) {
+                    toggleMobileMenu();
+                }
             });
         });
         
-        // Event listener para cerrar menú al hacer clic fuera del contenido
         if (mobileMenuOverlay) {
             mobileMenuOverlay.addEventListener('click', (e) => {
                 if (e.target === mobileMenuOverlay) {
@@ -582,57 +571,45 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // Event listener para cerrar menú con la tecla Escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && isMenuOpen) {
                 toggleMobileMenu();
             }
         });
         
-        // Función para manejar el resize de la ventana
-        function handleMenuResize() {
-            // Si la pantalla es grande, cerrar el menú móvil
+        window.addEventListener('resize', function() {
             if (window.innerWidth > 768 && isMenuOpen) {
                 toggleMobileMenu();
             }
-        }
+        });
         
-        // Event listener para el resize
-        window.addEventListener('resize', handleMenuResize);
-        
-        console.log('📱 Menú móvil inicializado');
+        console.log('📱 Menú móvil inicializado correctamente');
     }
     
-    // ===== DETECCIÓN DE DISPOSITIVO Y ORIENTACIÓN =====
+    // ===== DETECCIÓN DE DISPOSITIVO =====
     function initDeviceDetection() {
         const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const isTabletDevice = /iPad|Android(?!.*Mobile)/i.test(navigator.userAgent);
         const isDesktopDevice = !isMobileDevice && !isTabletDevice;
         
-        // Agregar clases al body para CSS específico
         body.classList.toggle('is-mobile', isMobileDevice);
         body.classList.toggle('is-tablet', isTabletDevice);
         body.classList.toggle('is-desktop', isDesktopDevice);
         
-        // Función para manejar cambios de orientación
         function handleOrientationChange() {
-            // Cerrar menú móvil en cambio de orientación
             if (isMenuOpen) {
                 toggleMobileMenu();
             }
             
-            // Detectar orientación
             const isLandscape = window.innerWidth > window.innerHeight;
             body.classList.toggle('is-landscape', isLandscape);
             body.classList.toggle('is-portrait', !isLandscape);
         }
         
-        // Inicializar orientación
         handleOrientationChange();
         
-        // Event listeners para orientación
         window.addEventListener('orientationchange', () => {
-            setTimeout(handleOrientationChange, 100); // Delay para que la orientación se actualice
+            setTimeout(handleOrientationChange, 100);
         });
         
         window.addEventListener('resize', handleOrientationChange);
@@ -641,7 +618,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return { isMobileDevice, isTabletDevice, isDesktopDevice };
     }
     
-    // ===== SMOOTH SCROLL MEJORADO PARA NAVEGACIÓN =====
+    // ===== SMOOTH SCROLL =====
     function initEnhancedSmoothScroll() {
         const allNavLinks = document.querySelectorAll('a[href^="#"]:not([href="#"])');
         
@@ -649,7 +626,6 @@ document.addEventListener('DOMContentLoaded', function() {
             link.addEventListener('click', function(e) {
                 const href = this.getAttribute('href');
                 
-                // Si es un enlace interno (empieza con #)
                 if (href.startsWith('#') && href.length > 1) {
                     e.preventDefault();
                     
@@ -657,18 +633,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     const targetElement = document.getElementById(targetId);
                     
                     if (targetElement) {
-                        // Calcular offset para el header fijo
                         const header = document.querySelector('header');
                         const headerHeight = header ? header.offsetHeight : 0;
                         const targetPosition = targetElement.offsetTop - headerHeight - 20;
                         
-                        // Smooth scroll
                         window.scrollTo({
                             top: targetPosition,
                             behavior: 'smooth'
                         });
                         
-                        // Cerrar menú móvil si está abierto
                         if (isMenuOpen) {
                             toggleMobileMenu();
                         }
@@ -677,56 +650,28 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        console.log('🎯 Smooth scroll mejorado inicializado');
+        console.log('🎯 Smooth scroll inicializado');
     }
     
-    // ===== OPTIMIZACIÓN DE RENDIMIENTO PARA MÓVILES =====
-    function initMobilePerformanceOptimizations() {
-        const deviceInfo = initDeviceDetection();
-        
-        if (deviceInfo.isMobileDevice) {
-            // Reducir animaciones en móviles para mejor rendimiento
-            const chromeObjects = document.querySelectorAll('.chrome-object');
-            chromeObjects.forEach(obj => {
-                obj.style.willChange = 'auto';
-            });
-            
-            // Optimizar efectos de lava para móviles
-            if (window.innerWidth < 480) {
-                // Reducir la frecuencia de actualización de animaciones
-                CONFIG.floatInterval = CONFIG.floatInterval * 1.5;
-                CONFIG.letterFlickerChance = CONFIG.letterFlickerChance * 0.7;
-            }
-            
-            console.log('📱 Optimizaciones móviles aplicadas');
-        }
-    }
-    
-    // ===== MANEJO DE ERRORES Y FALLBACKS =====
+    // ===== ERROR HANDLING =====
     function initErrorHandling() {
-        // Fallback para navegadores que no soportan IntersectionObserver
         if (!window.IntersectionObserver) {
-            console.warn('⚠️ IntersectionObserver no soportado, usando fallback');
-            // Mostrar todas las secciones inmediatamente
+            console.warn('⚠️ IntersectionObserver no soportado');
             DOM.allSections.forEach(section => {
                 section.style.opacity = '1';
                 section.style.transform = 'translateY(0)';
             });
         }
         
-        // Fallback para requestAnimationFrame
         if (!window.requestAnimationFrame) {
             window.requestAnimationFrame = function(callback) {
                 return setTimeout(callback, 1000 / 60);
             };
         }
         
-        // Manejo de errores globales
         window.addEventListener('error', function(e) {
-            console.error('❌ Error en Natural Groove:', e.error);
+            console.error('❌ Error:', e.error);
         });
-        
-        console.log('🛡️ Manejo de errores inicializado');
     }
     
     // ===== INICIALIZACIÓN DEL SISTEMA RESPONSIVO =====
@@ -734,80 +679,52 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🚀 Inicializando sistema responsivo...');
         
         try {
-            // Inicializar componentes responsivos
             initMobileMenu();
             initEnhancedSmoothScroll();
-            initMobilePerformanceOptimizations();
+            initDeviceDetection();
             initErrorHandling();
             
-            console.log('✅ Sistema responsivo inicializado correctamente');
+            console.log('✅ Sistema responsivo inicializado');
             
         } catch (error) {
-            console.error('❌ Error al inicializar sistema responsivo:', error);
+            console.error('❌ Error:', error);
         }
     }
     
-    // Ejecutar inicialización del sistema responsivo
     initResponsiveSystem();
     
-    // ===== ACTUALIZAR API PÚBLICA =====
-    // Extender la API existente con nuevas funciones móviles
+    // Extender API
     if (typeof window !== 'undefined' && window.NaturalGroove) {
         Object.assign(window.NaturalGroove, {
-            // Funciones del menú móvil
             toggleMobileMenu: () => toggleMobileMenu(),
             isMobileMenuOpen: () => isMenuOpen,
-            
-            // Funciones de dispositivo
-            getDeviceInfo: () => ({
-                isMobile: body.classList.contains('is-mobile'),
-                isTablet: body.classList.contains('is-tablet'),
-                isDesktop: body.classList.contains('is-desktop'),
-                isLandscape: body.classList.contains('is-landscape'),
-                isPortrait: body.classList.contains('is-portrait')
-            }),
-            
-            // Funciones de debug
-            debugResponsive: () => {
-                console.log('📱 Info del dispositivo:', window.NaturalGroove.getDeviceInfo());
-                console.log('📱 Menú móvil abierto:', isMenuOpen);
-                console.log('📱 Ancho de ventana:', window.innerWidth);
-                console.log('📱 Alto de ventana:', window.innerHeight);
-            }
+            fixOverlay: () => fixMobileOverlay()
         });
     }
     
     console.log('🎉 Natural Groove - Sistema completo inicializado');
 
-    // ===== FONDO ESTRELLADO ANIMADO =====
-    
+    // ===== FONDO ESTRELLADO =====
     function createStarryBackground() {
-        console.log('🌟 Creando fondo estrellado...');
-        
-        // Crear contenedor de estrellas
         const starryBackground = document.createElement('div');
         starryBackground.className = 'starry-background';
         
-        // Función para crear una estrella
         function createStar(type, count) {
             for (let i = 0; i < count; i++) {
                 const star = document.createElement('div');
                 star.className = `star star-${type}`;
                 
-                // Posición aleatoria
                 const left = Math.random() * 100;
                 const top = Math.random() * 100;
                 
                 star.style.left = `${left}%`;
                 star.style.top = `${top}%`;
                 
-                // Delay aleatorio para la animación
                 const animationDelay = Math.random() * (type === 'large' ? 3 : type === 'medium' ? 4 : 6);
                 star.style.animationDelay = `${animationDelay}s`;
                 
-                // Para estrellas grandes, tamaño variable
                 if (type === 'large') {
-                    const size = Math.random() * 2 + 2; // 2-4px
+                    const size = Math.random() * 2 + 2;
                     star.style.width = `${size}px`;
                     star.style.height = `${size}px`;
                 }
@@ -816,12 +733,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Crear diferentes tipos de estrellas
-        createStar('large', 50);    // 50 estrellas grandes
-        createStar('medium', 100);  // 100 estrellas medianas
-        createStar('small', 200);   // 200 estrellas pequeñas
+        createStar('large', 50);
+        createStar('medium', 100);
+        createStar('small', 200);
         
-        // Crear estrellas fugaces
         function createShootingStar(index) {
             const shootingStar = document.createElement('div');
             shootingStar.className = `shooting-star shooting-star-${index}`;
@@ -832,72 +747,41 @@ document.addEventListener('DOMContentLoaded', function() {
         createShootingStar(2);
         createShootingStar(3);
         
-        // Agregar al DOM
         document.body.insertBefore(starryBackground, document.body.firstChild);
-        
-        console.log('✨ Fondo estrellado creado con 350+ estrellas');
     }
     
-    // Función para optimizar estrellas en móvil
     function optimizeStarsForMobile() {
         if (window.innerWidth <= 768) {
             const stars = document.querySelectorAll('.star');
             stars.forEach((star, index) => {
-                // Reducir número de estrellas en móvil
                 if (index % 3 === 0) {
                     star.style.display = 'none';
                 }
             });
-            console.log('📱 Estrellas optimizadas para móvil');
         }
     }
     
-    // Función para toggle del fondo estrellado
-    function toggleStarryBackground() {
-        const starryBg = document.querySelector('.starry-background');
-        if (starryBg) {
-            starryBg.style.display = starryBg.style.display === 'none' ? 'block' : 'none';
-        }
-    }
-    
-    // Inicializar fondo estrellado
     function initStarryBackground() {
-        // Crear las estrellas
         createStarryBackground();
-        
-        // Optimizar para móvil
         optimizeStarsForMobile();
         
-        // Re-optimizar en resize
         window.addEventListener('resize', () => {
             clearTimeout(window.starResizeTimeout);
             window.starResizeTimeout = setTimeout(optimizeStarsForMobile, 500);
         });
     }
     
-    // Agregar a la inicialización principal (agregar después de init())
     initStarryBackground();
     
-    // Extender API pública
-    if (typeof window !== 'undefined' && window.NaturalGroove) {
-        Object.assign(window.NaturalGroove, {
-            // Funciones del fondo estrellado
-            toggleStars: toggleStarryBackground,
-            recreateStars: () => {
-                const existing = document.querySelector('.starry-background');
-                if (existing) existing.remove();
-                createStarryBackground();
-            },
-            getStarCount: () => document.querySelectorAll('.star').length
-        });
-    }
-
+    // Header scroll effect
     window.addEventListener('scroll', () => {
-        const header = document.querySelector('.header-dynamic');
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+        const header = document.querySelector('header');
+        if (header) {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         }
     });
 

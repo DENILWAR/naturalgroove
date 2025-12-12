@@ -137,6 +137,15 @@ document.addEventListener('DOMContentLoaded', function() {
             obj.style.pointerEvents = 'none';
             obj.style.zIndex = '-1';
         });
+        
+        // FIX CRÍTICO: Asegurar que el overlay del menú esté oculto al inicio
+        const mobileOverlay = document.querySelector('.mobile-menu-overlay');
+        if (mobileOverlay) {
+            mobileOverlay.style.display = 'none';
+            mobileOverlay.style.pointerEvents = 'none';
+            mobileOverlay.style.visibility = 'hidden';
+            mobileOverlay.classList.remove('active');
+        }
     }
 
     // ===== CARGA DE PRODUCTOS =====
