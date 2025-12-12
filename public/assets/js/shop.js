@@ -1,17 +1,24 @@
 /**
  * NATURAL GROOVE SHOP - JavaScript Functionality
  * Gestión completa de la tienda: productos, filtros, carrito, modales
+ * CON FIXES PARA iOS/MÓVIL
  */
 
 document.addEventListener('DOMContentLoaded', function() {
     
     // ===== CONFIGURACIÓN Y VARIABLES GLOBALES =====
     const CONFIG = {
-        productsDataUrl: '../data/products.json',
+        productsDataUrl: 'data/products.json',
         animationDuration: 300,
         debounceDelay: 300,
         notificationDuration: 3000
     };
+
+    // Detectar si es dispositivo táctil/móvil
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
+    console.log('📱 Touch device:', isTouchDevice, '| iOS:', isIOS);
 
     // Cache de elementos DOM
     const DOM = {
@@ -66,11 +73,30 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     let debounceTimer = null;
 
+    // ===== HELPER: AÑADIR EVENTO TÁCTIL COMPATIBLE =====
+    function addClickEvent(element, callback) {
+        if (!element) return;
+        
+        // Usar solo click - funciona en todos los dispositivos
+        element.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            callback.call(this, e);
+        });
+        
+        // Asegurar que el elemento sea "tapeable" en iOS
+        element.style.cursor = 'pointer';
+        element.style.webkitTapHighlightColor = 'transparent';
+    }
+
     // ===== INICIALIZACIÓN =====
     async function init() {
         console.log('🛍️ Natural Groove Shop - Iniciando...');
         
         try {
+            // Aplicar fixes de iOS primero
+            applyIOSFixes();
+            
             // Cargar productos
             await loadProducts();
             
@@ -81,11 +107,36 @@ document.addEventListener('DOMContentLoaded', function() {
             initNewsletter();
             updateCartCount();
             
+            // Escuchar cambios del carrito
+            document.addEventListener('cartChanged', function(e) {
+                updateCartCount();
+            });
+            
             console.log('✅ Shop inicializado correctamente');
         } catch (error) {
             console.error('❌ Error inicializando shop:', error);
             showError('Error cargando la tienda. Por favor, recarga la página.');
         }
+    }
+
+    // ===== FIXES ESPECÍFICOS PARA iOS =====
+    function applyIOSFixes() {
+        if (isIOS) {
+            document.body.classList.add('is-ios');
+            
+            // Fix para el 300ms delay en iOS
+            document.addEventListener('touchstart', function() {}, {passive: true});
+        }
+        
+        if (isTouchDevice) {
+            document.body.classList.add('is-touch-device');
+        }
+        
+        // Asegurar que los chrome-object no bloqueen toques
+        document.querySelectorAll('.chrome-object').forEach(obj => {
+            obj.style.pointerEvents = 'none';
+            obj.style.zIndex = '-1';
+        });
     }
 
     // ===== CARGA DE PRODUCTOS =====
@@ -124,9 +175,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 originalPrice: null,
                 currency: 'EUR',
                 images: {
-                    front: '../assets/images/products/shirt-001-front.jpg',
-                    back: '../assets/images/products/shirt-001-back.jpg',
-                    thumbnail: '../assets/images/products/shirt-001-thumb.jpg'
+                    front: 'assets/images/products/shirt-001-front.jpg',
+                    back: 'assets/images/products/shirt-001-back.jpg',
+                    thumbnail: 'assets/images/products/shirt-001-thumb.jpg'
                 },
                 sizes: ['S', 'M', 'L', 'XL'],
                 colors: ['Negro', 'Blanco'],
@@ -144,8 +195,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 originalPrice: 55,
                 currency: 'EUR',
                 images: {
-                    front: '../assets/images/products/hoodie-001-front.jpg',
-                    thumbnail: '../assets/images/products/hoodie-001-thumb.jpg'
+                    front: 'assets/images/products/hoodie-001-front.jpg',
+                    thumbnail: 'assets/images/products/hoodie-001-thumb.jpg'
                 },
                 sizes: ['S', 'M', 'L', 'XL'],
                 colors: ['Negro', 'Gris'],
@@ -154,6 +205,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 featured: true,
                 available: true,
                 badge: 'sale'
+            },
+            {
+                id: 'ng-shirt-002',
+                name: 'Techno Vibes Tee',
+                category: 'camisetas',
+                price: 28,
+                originalPrice: null,
+                currency: 'EUR',
+                images: {
+                    front: 'assets/images/products/shirt-002-front.jpg',
+                    thumbnail: 'assets/images/products/shirt-002-thumb.jpg'
+                },
+                sizes: ['S', 'M', 'L', 'XL'],
+                colors: ['Negro'],
+                description: 'Diseño exclusivo para amantes del techno',
+                material: '100% Algodón orgánico',
+                featured: true,
+                available: true,
+                badge: null
             }
         ];
         
@@ -162,20 +232,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== FILTROS Y BÚSQUEDA =====
     function initEventListeners() {
-        // Filtros
-        DOM.categoryFilter?.addEventListener('change', handleFilterChange);
-        DOM.priceFilter?.addEventListener('change', handleFilterChange);
-        DOM.sortFilter?.addEventListener('change', handleFilterChange);
+        // Filtros - usando eventos change que funcionan bien en móvil
+        if (DOM.categoryFilter) {
+            DOM.categoryFilter.addEventListener('change', handleFilterChange);
+        }
+        if (DOM.priceFilter) {
+            DOM.priceFilter.addEventListener('change', handleFilterChange);
+        }
+        if (DOM.sortFilter) {
+            DOM.sortFilter.addEventListener('change', handleFilterChange);
+        }
         
         // Búsqueda
-        DOM.searchInput?.addEventListener('input', handleSearchInput);
-        DOM.searchBtn?.addEventListener('click', handleSearch);
-        DOM.searchInput?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSearch();
-        });
+        if (DOM.searchInput) {
+            DOM.searchInput.addEventListener('input', handleSearchInput);
+            DOM.searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearch();
+                }
+            });
+        }
+        
+        if (DOM.searchBtn) {
+            addClickEvent(DOM.searchBtn, handleSearch);
+        }
         
         // Limpiar filtros
-        DOM.clearFiltersBtn?.addEventListener('click', clearAllFilters);
+        if (DOM.clearFiltersBtn) {
+            addClickEvent(DOM.clearFiltersBtn, clearAllFilters);
+        }
     }
 
     function handleFilterChange(event) {
@@ -311,14 +397,14 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="product-card" data-product-id="${product.id}">
                 <div class="product-image">
                     <img src="${mainImage}" alt="${product.name}" loading="lazy" 
-                         onerror="this.src='../assets/images/placeholder-product.jpg'">
+                         onerror="this.src='assets/images/placeholder-product.jpg'">
                     ${badgeText ? `<div class="product-badge ${product.badge}">${badgeText}</div>` : ''}
                     <div class="product-actions">
-                        <button class="action-btn quick-view-btn" title="Vista rápida">
+                        <button class="action-btn quick-view-btn" type="button" title="Vista rápida">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="action-btn wishlist-btn" title="Agregar a favoritos">
-                            <i class="fas fa-heart"></i>
+                        <button class="action-btn wishlist-btn" type="button" title="Agregar a favoritos">
+                            <i class="far fa-heart"></i>
                         </button>
                     </div>
                 </div>
@@ -332,10 +418,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="product-sizes">
                         ${product.sizes.map(size => 
-                            `<div class="size-option" data-size="${size}">${size}</div>`
+                            `<button type="button" class="size-option" data-size="${size}">${size}</button>`
                         ).join('')}
                     </div>
-                    <button class="add-to-cart-btn" 
+                    <button type="button" class="add-to-cart-btn" 
                             ${!product.available ? 'disabled' : ''}>
                         ${product.available ? 'Añadir al carrito' : 'Agotado'}
                     </button>
@@ -345,55 +431,82 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function addProductEventListeners() {
-        // Selección de tallas
-        document.querySelectorAll('.size-option').forEach(sizeBtn => {
-            sizeBtn.addEventListener('click', function() {
-                // Deseleccionar otras tallas en la misma card
-                const card = this.closest('.product-card');
-                card.querySelectorAll('.size-option').forEach(btn => 
-                    btn.classList.remove('selected'));
-                
-                // Seleccionar esta talla
-                this.classList.add('selected');
-                
-                // Habilitar botón de añadir al carrito
-                const addBtn = card.querySelector('.add-to-cart-btn');
-                if (addBtn && !addBtn.disabled) {
-                    addBtn.style.opacity = '1';
-                }
+        // Selección de tallas - IMPORTANTE: usar event delegation para mejor rendimiento
+        document.querySelectorAll('.product-card').forEach(card => {
+            // Tallas
+            card.querySelectorAll('.size-option').forEach(sizeBtn => {
+                sizeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Deseleccionar otras tallas en la misma card
+                    card.querySelectorAll('.size-option').forEach(btn => 
+                        btn.classList.remove('selected'));
+                    
+                    // Seleccionar esta talla
+                    this.classList.add('selected');
+                    
+                    console.log('Talla seleccionada:', this.dataset.size);
+                });
             });
-        });
-        
-        // Botones de añadir al carrito
-        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-            btn.addEventListener('click', handleAddToCart);
-        });
-        
-        // Vista rápida
-        document.querySelectorAll('.quick-view-btn').forEach(btn => {
-            btn.addEventListener('click', handleQuickView);
-        });
-        
-        // Wishlist (placeholder por ahora)
-        document.querySelectorAll('.wishlist-btn').forEach(btn => {
-            btn.addEventListener('click', handleWishlist);
+            
+            // Botón añadir al carrito
+            const addBtn = card.querySelector('.add-to-cart-btn');
+            if (addBtn) {
+                addBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleAddToCart(card);
+                });
+            }
+            
+            // Vista rápida
+            const quickViewBtn = card.querySelector('.quick-view-btn');
+            if (quickViewBtn) {
+                quickViewBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleQuickView(card);
+                });
+            }
+            
+            // Wishlist
+            const wishlistBtn = card.querySelector('.wishlist-btn');
+            if (wishlistBtn) {
+                wishlistBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleWishlist(this);
+                });
+            }
         });
     }
 
     // ===== GESTIÓN DEL CARRITO =====
-    function handleAddToCart(event) {
-        event.preventDefault();
-        const card = event.target.closest('.product-card');
+    function handleAddToCart(card) {
         const productId = card.dataset.productId;
         const selectedSize = card.querySelector('.size-option.selected');
         
+        console.log('Intentando añadir al carrito:', productId);
+        
         if (!selectedSize) {
             showNotification('Por favor, selecciona una talla', 'warning');
+            // Hacer scroll a las tallas y resaltarlas
+            const sizesContainer = card.querySelector('.product-sizes');
+            if (sizesContainer) {
+                sizesContainer.style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    sizesContainer.style.animation = '';
+                }, 500);
+            }
             return;
         }
         
         const product = allProducts.find(p => p.id === productId);
-        if (!product) return;
+        if (!product) {
+            console.error('Producto no encontrado:', productId);
+            return;
+        }
         
         const cartItem = {
             id: productId,
@@ -404,30 +517,48 @@ document.addEventListener('DOMContentLoaded', function() {
             quantity: 1
         };
         
+        console.log('Añadiendo al carrito:', cartItem);
+        
         // Usar la función del carrito global
-        if (typeof addToCart === 'function') {
-            addToCart(cartItem);
-            showNotification(`${product.name} añadido al carrito`);
-            updateCartCount();
+        if (typeof window.addToCart === 'function') {
+            const success = window.addToCart(cartItem);
+            if (success) {
+                showNotification(`${product.name} añadido al carrito`);
+                updateCartCount();
+                
+                // Feedback visual en el botón
+                const addBtn = card.querySelector('.add-to-cart-btn');
+                if (addBtn) {
+                    const originalText = addBtn.textContent;
+                    addBtn.textContent = '¡Añadido!';
+                    addBtn.style.background = '#10b981';
+                    setTimeout(() => {
+                        addBtn.textContent = originalText;
+                        addBtn.style.background = '';
+                    }, 1500);
+                }
+            }
         } else {
-            console.warn('Función addToCart no disponible');
+            console.error('Función addToCart no disponible');
+            showNotification('Error: Sistema de carrito no disponible', 'error');
         }
     }
 
     function updateCartCount() {
-        if (DOM.cartCount && typeof getCartItemCount === 'function') {
-            const count = getCartItemCount();
+        if (DOM.cartCount && typeof window.getCartItemCount === 'function') {
+            const count = window.getCartItemCount();
             DOM.cartCount.textContent = count;
             DOM.cartCount.style.display = count > 0 ? 'flex' : 'none';
+            console.log('Carrito actualizado:', count, 'items');
         }
     }
 
     // ===== VISTA RÁPIDA =====
-    function handleQuickView(event) {
-        event.preventDefault();
-        const card = event.target.closest('.product-card');
+    function handleQuickView(card) {
         const productId = card.dataset.productId;
         const product = allProducts.find(p => p.id === productId);
+        
+        console.log('Vista rápida:', productId);
         
         if (product) {
             showQuickView(product);
@@ -440,6 +571,7 @@ document.addEventListener('DOMContentLoaded', function() {
         DOM.quickViewTitle.textContent = product.name;
         DOM.quickViewBody.innerHTML = createQuickViewContent(product);
         DOM.quickViewModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
         
         // Añadir event listeners al contenido del modal
         addQuickViewEventListeners(product);
@@ -452,7 +584,8 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="quick-view-content">
                 <div class="quick-view-image">
                     <img src="${product.images.front || product.images.thumbnail}" 
-                         alt="${product.name}">
+                         alt="${product.name}"
+                         onerror="this.src='assets/images/placeholder-product.jpg'">
                 </div>
                 <div class="quick-view-info">
                     <div class="product-category">${product.category}</div>
@@ -469,7 +602,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h4>Tallas disponibles:</h4>
                         <div class="product-sizes">
                             ${product.sizes.map(size => 
-                                `<div class="size-option" data-size="${size}">${size}</div>`
+                                `<button type="button" class="size-option" data-size="${size}">${size}</button>`
                             ).join('')}
                         </div>
                     </div>
@@ -481,7 +614,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             ).join(', ')}
                         </div>
                     </div>
-                    <button class="add-to-cart-btn quick-view-add" data-product-id="${product.id}">
+                    <button type="button" class="add-to-cart-btn quick-view-add" data-product-id="${product.id}">
                         Añadir al carrito
                     </button>
                 </div>
@@ -490,20 +623,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function addQuickViewEventListeners(product) {
+        const modal = DOM.quickViewModal;
+        
         // Selección de tallas en modal
-        document.querySelectorAll('#quick-view-modal .size-option').forEach(sizeBtn => {
-            sizeBtn.addEventListener('click', function() {
-                document.querySelectorAll('#quick-view-modal .size-option').forEach(btn => 
+        modal.querySelectorAll('.size-option').forEach(sizeBtn => {
+            sizeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                modal.querySelectorAll('.size-option').forEach(btn => 
                     btn.classList.remove('selected'));
                 this.classList.add('selected');
             });
         });
         
         // Añadir al carrito desde modal
-        const addBtn = document.querySelector('.quick-view-add');
+        const addBtn = modal.querySelector('.quick-view-add');
         if (addBtn) {
-            addBtn.addEventListener('click', function() {
-                const selectedSize = document.querySelector('#quick-view-modal .size-option.selected');
+            addBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const selectedSize = modal.querySelector('.size-option.selected');
                 
                 if (!selectedSize) {
                     showNotification('Por favor, selecciona una talla', 'warning');
@@ -519,8 +659,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     quantity: 1
                 };
                 
-                if (typeof addToCart === 'function') {
-                    addToCart(cartItem);
+                if (typeof window.addToCart === 'function') {
+                    window.addToCart(cartItem);
                     showNotification(`${product.name} añadido al carrito`);
                     updateCartCount();
                     closeModal(DOM.quickViewModal);
@@ -529,13 +669,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ===== WISHLIST (PLACEHOLDER) =====
-    function handleWishlist(event) {
-        event.preventDefault();
-        const btn = event.target.closest('.wishlist-btn');
+    // ===== WISHLIST =====
+    function handleWishlist(btn) {
         const icon = btn.querySelector('i');
         
-        // Toggle estado visual
         if (icon.classList.contains('fas')) {
             icon.classList.remove('fas');
             icon.classList.add('far');
@@ -543,24 +680,34 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             icon.classList.remove('far');
             icon.classList.add('fas');
-            showNotification('Añadido a favoritos', 'success');
+            icon.style.color = '#ef4444';
+            showNotification('Añadido a favoritos ❤️', 'success');
         }
     }
 
     // ===== CATEGORÍAS =====
     function initCategoryCards() {
         DOM.categoryCards.forEach(card => {
-            card.addEventListener('click', function() {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
                 const category = this.dataset.category;
+                console.log('Categoría seleccionada:', category);
+                
                 if (category && DOM.categoryFilter) {
                     DOM.categoryFilter.value = category;
                     currentFilters.category = category;
                     applyFilters();
                     
                     // Scroll al grid de productos
-                    document.getElementById('products')?.scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                    const productsSection = document.getElementById('products');
+                    if (productsSection) {
+                        const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+                        const offsetTop = productsSection.offsetTop - headerHeight - 20;
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
                 }
             });
         });
@@ -570,7 +717,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function initModals() {
         // Cerrar modales con X
         document.querySelectorAll('.close').forEach(closeBtn => {
-            closeBtn.addEventListener('click', function() {
+            closeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
                 const modal = this.closest('.modal');
                 closeModal(modal);
             });
@@ -585,31 +733,46 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Enlaces de modales
-        DOM.sizeGuideLink?.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (DOM.sizeGuideModal) {
-                DOM.sizeGuideModal.style.display = 'block';
+        // Cerrar con tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    if (modal.style.display === 'block') {
+                        closeModal(modal);
+                    }
+                });
             }
         });
         
-        DOM.shippingInfoLink?.addEventListener('click', function(e) {
-            e.preventDefault();
-            showShippingInfo();
-        });
+        // Enlaces de modales
+        if (DOM.sizeGuideLink) {
+            DOM.sizeGuideLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (DOM.sizeGuideModal) {
+                    DOM.sizeGuideModal.style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        }
+        
+        if (DOM.shippingInfoLink) {
+            DOM.shippingInfoLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showShippingInfo();
+            });
+        }
     }
 
     function closeModal(modal) {
         if (modal) {
             modal.style.display = 'none';
+            document.body.style.overflow = '';
         }
     }
 
     function showShippingInfo() {
-        // Crear modal dinámico para info de envíos
         const shippingContent = `
             <div class="shipping-info">
-                <h3>Información de Envíos</h3>
                 <div class="shipping-options">
                     <div class="shipping-option">
                         <h4>🚚 Envío Estándar</h4>
@@ -637,17 +800,27 @@ document.addEventListener('DOMContentLoaded', function() {
             DOM.quickViewTitle.textContent = 'Información de Envíos';
             DOM.quickViewBody.innerHTML = shippingContent;
             DOM.quickViewModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
         }
     }
 
     // ===== NEWSLETTER =====
     function initNewsletter() {
-        DOM.newsletterSubmit?.addEventListener('click', handleNewsletterSubmit);
-        DOM.newsletterEmail?.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
+        if (DOM.newsletterSubmit) {
+            DOM.newsletterSubmit.addEventListener('click', function(e) {
+                e.preventDefault();
                 handleNewsletterSubmit();
-            }
-        });
+            });
+        }
+        
+        if (DOM.newsletterEmail) {
+            DOM.newsletterEmail.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleNewsletterSubmit();
+                }
+            });
+        }
     }
 
     function handleNewsletterSubmit() {
@@ -663,11 +836,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Simular suscripción (aquí integrarías con tu servicio de email)
         showNotification('¡Gracias por suscribirte! 🌿', 'success');
         if (DOM.newsletterEmail) DOM.newsletterEmail.value = '';
         
-        // Aquí añadirías la integración real con tu servicio de newsletter
         console.log('Newsletter subscription:', email);
     }
 
@@ -688,7 +859,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showNotification(message, type = 'success') {
-        if (!DOM.cartNotification || !DOM.notificationText) return;
+        // Usar toast global si existe
+        if (typeof window.showToast === 'function') {
+            window.showToast(message, type);
+            return;
+        }
+        
+        // Fallback a notificación del shop
+        if (!DOM.cartNotification || !DOM.notificationText) {
+            console.log('Notification:', message, type);
+            return;
+        }
         
         DOM.notificationText.textContent = message;
         DOM.cartNotification.className = `cart-notification ${type}`;
@@ -707,11 +888,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     <i class="fas fa-exclamation-triangle"></i>
                     <h3>Error cargando productos</h3>
                     <p>${message}</p>
-                    <button onclick="location.reload()" class="btn-secondary">
+                    <button type="button" onclick="location.reload()" class="btn-secondary">
                         Reintentar
                     </button>
                 </div>
             `;
+            DOM.productsGrid.style.display = 'block';
         }
     }
 
@@ -720,15 +902,28 @@ document.addEventListener('DOMContentLoaded', function() {
         return emailRegex.test(email);
     }
 
+    // ===== ANIMACIÓN DE SHAKE PARA FEEDBACK =====
+    const shakeStyle = document.createElement('style');
+    shakeStyle.textContent = `
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+    `;
+    document.head.appendChild(shakeStyle);
+
     // ===== API PÚBLICA =====
     window.NaturalGrooveShop = {
-        // Métodos públicos para debugging y extensión
         getProducts: () => allProducts,
         getFilteredProducts: () => filteredProducts,
         getCurrentFilters: () => currentFilters,
         applyFilters: applyFilters,
         showNotification: showNotification,
-        updateCartCount: updateCartCount
+        updateCartCount: updateCartCount,
+        clearFilters: clearAllFilters
     };
 
     // ===== INICIALIZAR =====
