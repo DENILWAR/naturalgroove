@@ -61,19 +61,20 @@
     <div class="chrome-object obj-right-top"></div>
 
 
-    <!-- Section 1: Natural Groove -->
-     
+    <!-- Section 1: Natural Groove con Video Fullscreen -->
     <section id="home" class="section">
-        <section id="home" class="home-section">
+        <!-- Contenedor del video de fondo -->
+        <div class="home-section">
             <video id="home-video" autoplay loop muted playsinline>
-              <source src="assets/images/intro.mov" type="video/mp4" />
+                <source src="assets/images/intro.mov" type="video/mp4" />
+                <!-- Fallback para formato webm -->
+                <source src="assets/images/intro.webm" type="video/webm" />
             </video>
-    
-        </section>
+        </div>
+        
+        <!-- Contenido sobre el video -->
         <div class="section-content">
             <h1 id="main-title">NATURAL GROOVE</h1>
-            
-
         </div>
     </section>
 

@@ -93,7 +93,6 @@ html::before {
 
 /* Capa de texto repetido */
 html::after {
-    /*content: 'Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • Press F5 or Cmd/Ctrl+R • Desliza hacia abajo • ';*/
     position: fixed;
     top: 0;
     left: 0;
@@ -150,6 +149,61 @@ body {
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     scroll-behavior: smooth;
+}
+
+/* ===== VIDEO HERO FULLSCREEN ===== */
+.home-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+}
+
+#home-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 0;
+}
+
+/* Overlay oscuro opcional sobre el video para mejor legibilidad */
+.home-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Sección home específica */
+#home.section {
+    min-height: 100vh;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+#home .section-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
 }
 
 /* ===== HEADER RESPONSIVO OPTIMIZADO ===== */
@@ -1323,6 +1377,21 @@ p {
         padding-top: 120px;
     }
     
+    /* Video responsive */
+    #home.section {
+        min-height: 100vh;
+        height: 100vh;
+    }
+    
+    #home-video {
+        min-width: 100%;
+        min-height: 100%;
+    }
+    
+    .home-section::after {
+        background: rgba(0, 0, 0, 0.4);
+    }
+    
     /* Tipografía móvil */
     h1 {
         font-size: clamp(2rem, 6vw, 3.5rem);
@@ -1477,6 +1546,14 @@ p {
     
     .section:first-of-type {
         padding-top: 100px;
+    }
+    
+    /* Video en móviles pequeños */
+    #home-video {
+        min-width: auto;
+        min-height: 100%;
+        width: auto;
+        height: 100%;
     }
     
     /* Tipografía extra pequeña */
