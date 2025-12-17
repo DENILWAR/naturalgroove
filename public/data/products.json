@@ -8,9 +8,9 @@
         "originalPrice": null,
         "currency": "EUR",
         "images": {
-          "front": "assets/images/cotonshirt.png",
-          "back": "assets/images/cotonshirt.png",
-          "thumbnail": "assets/images/products/shirt-001-thumb.jpg"
+          "front": "assets/images/camisetanew.jpeg",
+          "back": "assets/images/camisetanew.jpeg",
+          "thumbnail": "assets/images/camisetanew.jpeg"
         },
         "sizes": ["S", "M", "L", "XL"],
         "colors": ["Negro", "Blanco", "Gris"],
@@ -48,8 +48,8 @@
         "originalPrice": null,
         "currency": "EUR",
         "images": {
-          "front": "assets/images/products/pants-001-front.jpg",
-          "thumbnail": "assets/images/products/pants-001-thumb.jpg"
+          "front": "assets/images/cargo.jpeg",
+          "thumbnail": "assets/images/cargo.jpeg"
         },
         "sizes": ["S", "M", "L", "XL"],
         "colors": ["Negro", "Verde", "Beige"],
