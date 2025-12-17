@@ -1,6 +1,6 @@
 /**
  * NATURAL GROOVE SHOP - JavaScript Functionality
- * Gestión completa de la tienda: productos, filtros, carrito, modales
+ * Gestión completa de la tienda: productos, filtros, carrito, favoritos
  * CON FIXES PARA iOS/MÓVIL
  */
 
@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
         productsDataUrl: 'data/products.json',
         animationDuration: 300,
         debounceDelay: 300,
-        notificationDuration: 3000
+        notificationDuration: 3000,
+        favoritesKey: 'ng_favorites' // Key para localStorage
     };
 
     // Detectar si es dispositivo táctil/móvil
@@ -34,8 +35,15 @@ document.addEventListener('DOMContentLoaded', function() {
         productsGrid: document.getElementById('products-grid'),
         loadingProducts: document.getElementById('loading-products'),
         noResults: document.getElementById('no-results'),
+        noFavorites: document.getElementById('no-favorites'),
         productsShowing: document.getElementById('products-showing'),
         productsTotal: document.getElementById('products-total'),
+        
+        // Favoritos
+        favoritesIndicator: document.getElementById('favorites-indicator'),
+        favoritesCount: document.getElementById('favorites-count'),
+        clearFavoritesBtn: document.getElementById('clear-favorites'),
+        showAllProductsBtn: document.getElementById('show-all-products'),
         
         // Categorías
         categoryCards: document.querySelectorAll('.category-card'),
@@ -65,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Variables de estado
     let allProducts = [];
     let filteredProducts = [];
+    let favorites = []; // Array de IDs de productos favoritos
     let currentFilters = {
         category: 'all',
         price: 'all',
@@ -73,20 +82,73 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     let debounceTimer = null;
 
-    // ===== HELPER: AÑADIR EVENTO TÁCTIL COMPATIBLE =====
-    function addClickEvent(element, callback) {
-        if (!element) return;
+    // ===== SISTEMA DE FAVORITOS =====
+    function loadFavorites() {
+        try {
+            const saved = localStorage.getItem(CONFIG.favoritesKey);
+            favorites = saved ? JSON.parse(saved) : [];
+            console.log('💖 Favoritos cargados:', favorites.length);
+        } catch (e) {
+            console.error('Error cargando favoritos:', e);
+            favorites = [];
+        }
+        updateFavoritesIndicator();
+    }
+
+    function saveFavorites() {
+        try {
+            localStorage.setItem(CONFIG.favoritesKey, JSON.stringify(favorites));
+            console.log('💾 Favoritos guardados:', favorites.length);
+        } catch (e) {
+            console.error('Error guardando favoritos:', e);
+        }
+        updateFavoritesIndicator();
+    }
+
+    function toggleFavorite(productId) {
+        const index = favorites.indexOf(productId);
+        if (index === -1) {
+            favorites.push(productId);
+            console.log('❤️ Añadido a favoritos:', productId);
+            return true; // Añadido
+        } else {
+            favorites.splice(index, 1);
+            console.log('💔 Eliminado de favoritos:', productId);
+            return false; // Eliminado
+        }
+    }
+
+    function isFavorite(productId) {
+        return favorites.includes(productId);
+    }
+
+    function clearAllFavorites() {
+        favorites = [];
+        saveFavorites();
+        showNotification('Favoritos eliminados', 'info');
         
-        // Usar solo click - funciona en todos los dispositivos
-        element.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            callback.call(this, e);
+        // Actualizar UI de todos los corazones
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+            const icon = btn.querySelector('i');
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            icon.style.color = '';
         });
         
-        // Asegurar que el elemento sea "tapeable" en iOS
-        element.style.cursor = 'pointer';
-        element.style.webkitTapHighlightColor = 'transparent';
+        // Si estamos viendo favoritos, volver a todos
+        if (currentFilters.category === 'favorites') {
+            currentFilters.category = 'all';
+            if (DOM.categoryFilter) DOM.categoryFilter.value = 'all';
+            applyFilters();
+        }
+    }
+
+    function updateFavoritesIndicator() {
+        if (DOM.favoritesIndicator && DOM.favoritesCount) {
+            const count = favorites.length;
+            DOM.favoritesCount.textContent = count;
+            DOM.favoritesIndicator.style.display = count > 0 ? 'flex' : 'none';
+        }
     }
 
     // ===== INICIALIZACIÓN =====
@@ -97,6 +159,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Aplicar fixes de iOS primero
             applyIOSFixes();
             
+            // Cargar favoritos desde localStorage
+            loadFavorites();
+            
             // Cargar productos
             await loadProducts();
             
@@ -105,6 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
             initCategoryCards();
             initModals();
             initNewsletter();
+            initFavoritesListeners();
             updateCartCount();
             
             // Escuchar cambios del carrito
@@ -119,12 +185,49 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // ===== LISTENERS DE FAVORITOS =====
+    function initFavoritesListeners() {
+        // Botón limpiar favoritos
+        if (DOM.clearFavoritesBtn) {
+            DOM.clearFavoritesBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('¿Eliminar todos los favoritos?')) {
+                    clearAllFavorites();
+                }
+            });
+        }
+        
+        // Botón mostrar todos los productos
+        if (DOM.showAllProductsBtn) {
+            DOM.showAllProductsBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                currentFilters.category = 'all';
+                if (DOM.categoryFilter) DOM.categoryFilter.value = 'all';
+                applyFilters();
+            });
+        }
+        
+        // Links de favoritos en el footer
+        document.querySelectorAll('[data-category="favorites"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                currentFilters.category = 'favorites';
+                if (DOM.categoryFilter) DOM.categoryFilter.value = 'favorites';
+                applyFilters();
+                
+                // Scroll a productos
+                const productsSection = document.getElementById('products');
+                if (productsSection) {
+                    productsSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    }
+
     // ===== FIXES ESPECÍFICOS PARA iOS =====
     function applyIOSFixes() {
         if (isIOS) {
             document.body.classList.add('is-ios');
-            
-            // Fix para el 300ms delay en iOS
             document.addEventListener('touchstart', function() {}, {passive: true});
         }
         
@@ -161,12 +264,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             allProducts = data.products || [];
             
-            // Aplicar filtros y mostrar productos
             applyFilters();
             
         } catch (error) {
             console.error('Error cargando productos:', error);
-            // Fallback con productos de ejemplo si falla la carga
             loadFallbackProducts();
         } finally {
             showLoading(false);
@@ -184,9 +285,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 originalPrice: null,
                 currency: 'EUR',
                 images: {
-                    front: 'assets/images/products/shirt-001-front.jpg',
-                    back: 'assets/images/products/shirt-001-back.jpg',
-                    thumbnail: 'assets/images/products/shirt-001-thumb.jpg'
+                    front: 'assets/images/camisetanew.jpeg',
+                    thumbnail: 'assets/images/camisetanew.jpeg'
                 },
                 sizes: ['S', 'M', 'L', 'XL'],
                 colors: ['Negro', 'Blanco'],
@@ -204,8 +304,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 originalPrice: 55,
                 currency: 'EUR',
                 images: {
-                    front: 'assets/images/products/hoodie-001-front.jpg',
-                    thumbnail: 'assets/images/products/hoodie-001-thumb.jpg'
+                    front: 'assets/images/hoodieNG.jpg',
+                    thumbnail: 'assets/images/hoodieNG.jpg'
                 },
                 sizes: ['S', 'M', 'L', 'XL'],
                 colors: ['Negro', 'Gris'],
@@ -214,25 +314,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 featured: true,
                 available: true,
                 badge: 'sale'
-            },
-            {
-                id: 'ng-shirt-002',
-                name: 'Techno Vibes Tee',
-                category: 'camisetas',
-                price: 28,
-                originalPrice: null,
-                currency: 'EUR',
-                images: {
-                    front: 'assets/images/products/shirt-002-front.jpg',
-                    thumbnail: 'assets/images/products/shirt-002-thumb.jpg'
-                },
-                sizes: ['S', 'M', 'L', 'XL'],
-                colors: ['Negro'],
-                description: 'Diseño exclusivo para amantes del techno',
-                material: '100% Algodón orgánico',
-                featured: true,
-                available: true,
-                badge: null
             }
         ];
         
@@ -241,7 +322,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== FILTROS Y BÚSQUEDA =====
     function initEventListeners() {
-        // Filtros - usando eventos change que funcionan bien en móvil
         if (DOM.categoryFilter) {
             DOM.categoryFilter.addEventListener('change', handleFilterChange);
         }
@@ -252,7 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
             DOM.sortFilter.addEventListener('change', handleFilterChange);
         }
         
-        // Búsqueda
         if (DOM.searchInput) {
             DOM.searchInput.addEventListener('input', handleSearchInput);
             DOM.searchInput.addEventListener('keypress', (e) => {
@@ -264,12 +343,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (DOM.searchBtn) {
-            addClickEvent(DOM.searchBtn, handleSearch);
+            DOM.searchBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleSearch();
+            });
         }
         
-        // Limpiar filtros
         if (DOM.clearFiltersBtn) {
-            addClickEvent(DOM.clearFiltersBtn, clearAllFilters);
+            DOM.clearFiltersBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                clearAllFilters();
+            });
         }
     }
 
@@ -295,7 +379,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function clearAllFilters() {
-        // Resetear filtros
         currentFilters = {
             category: 'all',
             price: 'all',
@@ -303,7 +386,6 @@ document.addEventListener('DOMContentLoaded', function() {
             search: ''
         };
         
-        // Resetear elementos DOM
         if (DOM.categoryFilter) DOM.categoryFilter.value = 'all';
         if (DOM.priceFilter) DOM.priceFilter.value = 'all';
         if (DOM.sortFilter) DOM.sortFilter.value = 'featured';
@@ -316,8 +398,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Comenzar con todos los productos
         filteredProducts = [...allProducts];
         
-        // Aplicar filtro de categoría
-        if (currentFilters.category !== 'all') {
+        // Filtro especial de favoritos
+        if (currentFilters.category === 'favorites') {
+            filteredProducts = filteredProducts.filter(product => 
+                isFavorite(product.id)
+            );
+        } else if (currentFilters.category !== 'all') {
+            // Aplicar filtro de categoría normal
             filteredProducts = filteredProducts.filter(product => 
                 product.category === currentFilters.category
             );
@@ -377,14 +464,23 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderProducts() {
         if (!DOM.productsGrid) return;
         
-        // Mostrar/ocultar estado de "sin resultados"
+        // Ocultar todos los estados
+        if (DOM.noResults) DOM.noResults.style.display = 'none';
+        if (DOM.noFavorites) DOM.noFavorites.style.display = 'none';
+        
+        // Mostrar estado apropiado si no hay productos
         if (filteredProducts.length === 0) {
             DOM.productsGrid.style.display = 'none';
-            if (DOM.noResults) DOM.noResults.style.display = 'block';
+            
+            // Mostrar mensaje específico para favoritos vacíos
+            if (currentFilters.category === 'favorites') {
+                if (DOM.noFavorites) DOM.noFavorites.style.display = 'block';
+            } else {
+                if (DOM.noResults) DOM.noResults.style.display = 'block';
+            }
             return;
         }
         
-        if (DOM.noResults) DOM.noResults.style.display = 'none';
         DOM.productsGrid.style.display = 'grid';
         
         // Generar HTML de productos
@@ -401,6 +497,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const mainImage = product.images.front || product.images.thumbnail;
         const badgeText = product.badge === 'new' ? 'Nuevo' : 
                          product.badge === 'sale' ? 'Oferta' : '';
+        const isFav = isFavorite(product.id);
         
         return `
             <div class="product-card" data-product-id="${product.id}">
@@ -412,8 +509,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         <button class="action-btn quick-view-btn" type="button" title="Vista rápida">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="action-btn wishlist-btn" type="button" title="Agregar a favoritos">
-                            <i class="far fa-heart"></i>
+                        <button class="action-btn wishlist-btn ${isFav ? 'is-favorite' : ''}" type="button" title="${isFav ? 'Quitar de favoritos' : 'Agregar a favoritos'}">
+                            <i class="${isFav ? 'fas' : 'far'} fa-heart" style="${isFav ? 'color: #ef4444;' : ''}"></i>
                         </button>
                     </div>
                 </div>
@@ -440,7 +537,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function addProductEventListeners() {
-        // Selección de tallas - IMPORTANTE: usar event delegation para mejor rendimiento
         document.querySelectorAll('.product-card').forEach(card => {
             // Tallas
             card.querySelectorAll('.size-option').forEach(sizeBtn => {
@@ -448,13 +544,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    // Deseleccionar otras tallas en la misma card
                     card.querySelectorAll('.size-option').forEach(btn => 
                         btn.classList.remove('selected'));
                     
-                    // Seleccionar esta talla
                     this.classList.add('selected');
-                    
                     console.log('Talla seleccionada:', this.dataset.size);
                 });
             });
@@ -479,13 +572,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
             
-            // Wishlist
+            // Wishlist / Favoritos
             const wishlistBtn = card.querySelector('.wishlist-btn');
             if (wishlistBtn) {
                 wishlistBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleWishlist(this);
+                    handleWishlist(this, card);
                 });
             }
         });
@@ -500,7 +593,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!selectedSize) {
             showNotification('Por favor, selecciona una talla', 'warning');
-            // Hacer scroll a las tallas y resaltarlas
             const sizesContainer = card.querySelector('.product-sizes');
             if (sizesContainer) {
                 sizesContainer.style.animation = 'shake 0.5s ease';
@@ -528,14 +620,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('Añadiendo al carrito:', cartItem);
         
-        // Usar la función del carrito global
         if (typeof window.addToCart === 'function') {
             const success = window.addToCart(cartItem);
             if (success) {
                 showNotification(`${product.name} añadido al carrito`);
                 updateCartCount();
                 
-                // Feedback visual en el botón
                 const addBtn = card.querySelector('.add-to-cart-btn');
                 if (addBtn) {
                     const originalText = addBtn.textContent;
@@ -582,12 +672,12 @@ document.addEventListener('DOMContentLoaded', function() {
         DOM.quickViewModal.style.display = 'block';
         document.body.style.overflow = 'hidden';
         
-        // Añadir event listeners al contenido del modal
         addQuickViewEventListeners(product);
     }
 
     function createQuickViewContent(product) {
         const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+        const isFav = isFavorite(product.id);
         
         return `
             <div class="quick-view-content">
@@ -619,13 +709,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h4>Colores disponibles:</h4>
                         <div class="color-options">
                             ${product.colors.map(color => 
-                                `<span class="color-option">${color}</span>`
-                            ).join(', ')}
+                                `<span class="color-tag">${color}</span>`
+                            ).join('')}
                         </div>
                     </div>
-                    <button type="button" class="add-to-cart-btn quick-view-add" data-product-id="${product.id}">
-                        Añadir al carrito
-                    </button>
+                    <div class="quick-view-actions">
+                        <button type="button" class="add-to-cart-btn quick-view-add" data-product-id="${product.id}">
+                            Añadir al carrito
+                        </button>
+                        <button type="button" class="btn-favorite-quick ${isFav ? 'is-favorite' : ''}" data-product-id="${product.id}">
+                            <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+                            ${isFav ? 'En favoritos' : 'Añadir a favoritos'}
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -676,21 +772,84 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
+        
+        // Favoritos desde modal
+        const favBtn = modal.querySelector('.btn-favorite-quick');
+        if (favBtn) {
+            favBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const added = toggleFavorite(product.id);
+                saveFavorites();
+                
+                const icon = this.querySelector('i');
+                if (added) {
+                    this.classList.add('is-favorite');
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    this.innerHTML = '<i class="fas fa-heart"></i> En favoritos';
+                    showNotification('Añadido a favoritos ❤️', 'success');
+                } else {
+                    this.classList.remove('is-favorite');
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    this.innerHTML = '<i class="far fa-heart"></i> Añadir a favoritos';
+                    showNotification('Eliminado de favoritos', 'info');
+                }
+                
+                // Actualizar la card en el grid
+                updateProductCardFavoriteState(product.id, added);
+            });
+        }
     }
 
-    // ===== WISHLIST =====
-    function handleWishlist(btn) {
+    // ===== WISHLIST / FAVORITOS =====
+    function handleWishlist(btn, card) {
+        const productId = card.dataset.productId;
         const icon = btn.querySelector('i');
         
-        if (icon.classList.contains('fas')) {
-            icon.classList.remove('fas');
-            icon.classList.add('far');
-            showNotification('Eliminado de favoritos', 'info');
-        } else {
+        const added = toggleFavorite(productId);
+        saveFavorites();
+        
+        if (added) {
+            btn.classList.add('is-favorite');
             icon.classList.remove('far');
             icon.classList.add('fas');
             icon.style.color = '#ef4444';
             showNotification('Añadido a favoritos ❤️', 'success');
+        } else {
+            btn.classList.remove('is-favorite');
+            icon.classList.remove('fas');
+            icon.classList.add('far');
+            icon.style.color = '';
+            showNotification('Eliminado de favoritos', 'info');
+            
+            // Si estamos viendo favoritos, re-renderizar
+            if (currentFilters.category === 'favorites') {
+                applyFilters();
+            }
+        }
+    }
+
+    function updateProductCardFavoriteState(productId, isFav) {
+        const card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+        if (card) {
+            const btn = card.querySelector('.wishlist-btn');
+            const icon = btn?.querySelector('i');
+            if (btn && icon) {
+                if (isFav) {
+                    btn.classList.add('is-favorite');
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    icon.style.color = '#ef4444';
+                } else {
+                    btn.classList.remove('is-favorite');
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    icon.style.color = '';
+                }
+            }
         }
     }
 
@@ -707,7 +866,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     currentFilters.category = category;
                     applyFilters();
                     
-                    // Scroll al grid de productos
                     const productsSection = document.getElementById('products');
                     if (productsSection) {
                         const headerHeight = document.querySelector('header')?.offsetHeight || 0;
@@ -724,7 +882,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== MODALES =====
     function initModals() {
-        // Cerrar modales con X
         document.querySelectorAll('.close').forEach(closeBtn => {
             closeBtn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -733,7 +890,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Cerrar modales clickeando fuera
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', function(e) {
                 if (e.target === this) {
@@ -742,7 +898,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Cerrar con tecla Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 document.querySelectorAll('.modal').forEach(modal => {
@@ -753,7 +908,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Enlaces de modales
         if (DOM.sizeGuideLink) {
             DOM.sizeGuideLink.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -868,13 +1022,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showNotification(message, type = 'success') {
-        // Usar toast global si existe
         if (typeof window.showToast === 'function') {
             window.showToast(message, type);
             return;
         }
         
-        // Fallback a notificación del shop
         if (!DOM.cartNotification || !DOM.notificationText) {
             console.log('Notification:', message, type);
             return;
@@ -911,7 +1063,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return emailRegex.test(email);
     }
 
-    // ===== ANIMACIÓN DE SHAKE PARA FEEDBACK =====
+    // ===== ANIMACIÓN DE SHAKE =====
     const shakeStyle = document.createElement('style');
     shakeStyle.textContent = `
         @keyframes shake {
@@ -929,10 +1081,12 @@ document.addEventListener('DOMContentLoaded', function() {
         getProducts: () => allProducts,
         getFilteredProducts: () => filteredProducts,
         getCurrentFilters: () => currentFilters,
+        getFavorites: () => favorites,
         applyFilters: applyFilters,
         showNotification: showNotification,
         updateCartCount: updateCartCount,
-        clearFilters: clearAllFilters
+        clearFilters: clearAllFilters,
+        clearFavorites: clearAllFavorites
     };
 
     // ===== INICIALIZAR =====

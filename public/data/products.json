@@ -90,7 +90,7 @@
           "thumbnail": "assets/images/products/jacket-001-thumb.jpg"
         },
         "sizes": ["S", "M", "L", "XL"],
-        "colors": ["Negro", "Gris"],
+        "colors": ["Negro", "Gris", "Verde", "Azul"],
         "description": "Chaqueta urbana resistente al viento",
         "material": "Poliéster impermeable",
         "featured": true,

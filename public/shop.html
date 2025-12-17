@@ -38,9 +38,7 @@
         </nav>
     </header>
 
-    <!-- ============================================ -->
-    <!-- OVERLAY DEL MENÚ MÓVIL - ESTO ES LO QUE FALTABA -->
-    <!-- ============================================ -->
+    <!-- Overlay del menú móvil -->
     <div class="mobile-menu-overlay">
         <ul class="mobile-menu">
             <li><a href="index.html">Home</a></li>
@@ -55,7 +53,6 @@
             </a></li>
         </ul>
     </div>
-    <!-- ============================================ -->
 
     <!-- Shop Hero Section -->
     <section id="shop-hero" class="section">
@@ -91,7 +88,9 @@
                         <option value="camisetas">Camisetas</option>
                         <option value="hoodies">Hoodies</option>
                         <option value="pantalones">Pantalones</option>
+                        <option value="chaquetas">Chaquetas</option>
                         <option value="accesorios">Accesorios</option>
+                        <option value="favorites">❤️ Mis Favoritos</option>
                     </select>
                 </div>
                 
@@ -122,6 +121,12 @@
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
+            </div>
+            
+            <!-- Indicador de favoritos -->
+            <div id="favorites-indicator" class="favorites-indicator" style="display: none;">
+                <span><i class="fas fa-heart"></i> <span id="favorites-count">0</span> productos en favoritos</span>
+                <button id="clear-favorites" class="btn-clear-favorites">Limpiar favoritos</button>
             </div>
         </div>
         <div class="chrome-object obj-right-medium"></div>
@@ -157,6 +162,14 @@
                 <p>Intenta cambiar los filtros o búsqueda</p>
                 <button id="clear-filters" class="btn-secondary">Limpiar filtros</button>
             </div>
+            
+            <!-- No Favorites State -->
+            <div id="no-favorites" class="no-results" style="display: none;">
+                <i class="far fa-heart"></i>
+                <h3>No tienes favoritos aún</h3>
+                <p>Haz clic en el corazón de cualquier producto para añadirlo a favoritos</p>
+                <button id="show-all-products" class="btn-secondary">Ver todos los productos</button>
+            </div>
         </div>
         <div class="chrome-object obj-left-small"></div>
         <div class="chrome-object obj-right-small"></div>
@@ -170,7 +183,7 @@
             <div class="categories-grid">
                 <div class="category-card" data-category="camisetas">
                     <div class="category-image">
-                        <img src="/assets/images/camisetanew.jpeg" alt="Camisetas" loading="lazy">
+                        <img src="assets/images/camisetanew.jpeg" alt="Camisetas" loading="lazy">
                     </div>
                     <div class="category-info">
                         <h3>Camisetas</h3>
@@ -181,18 +194,18 @@
 
                 <div class="category-card" data-category="hoodies">
                     <div class="category-image">
-                        <img src="/assets/images/JACKET.jpeg" alt="Hoodies" loading="lazy">
+                        <img src="assets/images/hoodieNG.jpg" alt="Hoodies" loading="lazy">
                     </div>
                     <div class="category-info">
                         <h3>Hoodies</h3>
                         <p>Comodidad y estilo en uno</p>
-                        <span class="category-count">2 productos</span>
+                        <span class="category-count">1 producto</span>
                     </div>
                 </div>
 
                 <div class="category-card" data-category="accesorios">
                     <div class="category-image">
-                        <img src="/assets/images/cappp.jpeg" alt="Accesorios" loading="lazy">
+                        <img src="assets/images/cappp.jpeg" alt="Accesorios" loading="lazy">
                     </div>
                     <div class="category-info">
                         <h3>Accesorios</h3>
@@ -241,6 +254,7 @@
                         <li><a href="#" data-category="hoodies">Hoodies</a></li>
                         <li><a href="#" data-category="accesorios">Accesorios</a></li>
                         <li><a href="cart.html">Mi Carrito</a></li>
+                        <li><a href="#" data-category="favorites">❤️ Mis Favoritos</a></li>
                     </ul>
                 </div>
 
